@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ale &amp; JuanSe</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 <style>
   :root {
     --bg: #F4F0E9;
@@ -112,37 +111,76 @@
     padding-inline: 6px;
   }
   .hero-photo { aspect-ratio: 4 / 5; margin-bottom: 24px; }
-  .gallery-swiper {
-    --swiper-navigation-size: 14px;
-    margin-top: 4px;
-    padding-block: 10px 34px;
+  .gallery-coverflow {
+    max-width: 380px;
+    margin: 4px auto 0;
   }
-  .gallery-swiper .swiper-slide {
-    width: 205px;
+  .gallery-track {
+    position: relative;
+    height: 340px;
+    touch-action: pan-y;
+  }
+  .gallery-stage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+  }
+  .gallery-card {
+    position: absolute;
+    height: 92%;
     aspect-ratio: 2 / 3;
-    transition: filter 0.35s ease, opacity 0.35s ease;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 20px 25px -5px rgba(58, 52, 42, 0.22), 0 8px 10px -6px rgba(58, 52, 42, 0.18);
+    transition: transform 1100ms ease-in-out, opacity 1100ms ease-in-out, box-shadow 1100ms ease-in-out;
   }
-  .gallery-swiper .swiper-slide:not(.swiper-slide-active) {
-    filter: grayscale(40%) brightness(0.85);
-    opacity: 0.65;
+  .gallery-card.is-active {
+    box-shadow: 0 0 0 2px rgba(169, 128, 63, 0.4), 0 20px 25px -5px rgba(58, 52, 42, 0.28), 0 8px 10px -6px rgba(58, 52, 42, 0.2);
   }
-  .gallery-swiper .swiper-slide .photo-img {
-    border-radius: 14px;
-    box-shadow: 0 18px 30px -18px rgba(58, 52, 42, 0.5);
-  }
-  .gallery-swiper .swiper-slide .photo-placeholder { width: 100%; height: 100%; aspect-ratio: auto; border-radius: 14px; }
-  .gallery-swiper .swiper-button-prev,
-  .gallery-swiper .swiper-button-next {
-    width: 38px;
-    height: 38px;
-    margin-top: -19px;
+  .gallery-card .photo-img { border: none; }
+  .gallery-nav {
+    display: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 200;
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
     background: var(--surface-2);
     border: 1px solid var(--border);
-    border-radius: 50%;
     color: var(--ink);
+    cursor: pointer;
+    padding: 0;
   }
-  .gallery-swiper .swiper-pagination-bullet { background: var(--olive); opacity: 0.4; transition: all 0.3s ease; }
-  .gallery-swiper .swiper-pagination-bullet-active { width: 22px; border-radius: 5px; opacity: 1; background: var(--brass-strong); }
+  .gallery-nav svg { width: 16px; height: 16px; }
+  .gallery-nav-prev { left: 0; }
+  .gallery-nav-next { right: 0; }
+  .gallery-dots { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+  .gallery-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--olive);
+    opacity: 0.35;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 300ms ease;
+  }
+  .gallery-dot.is-active { width: 24px; opacity: 1; background: var(--brass-strong); }
+  @media (min-width: 768px) {
+    .gallery-coverflow { max-width: 600px; }
+    .gallery-track { height: 520px; }
+    .gallery-nav { display: flex; }
+  }
   .venue-photo { aspect-ratio: 16 / 9; margin-top: 24px; }
   .video-placeholder { aspect-ratio: 16 / 9; margin-top: 20px; }
   .video-placeholder svg { width: 34px; height: 34px; }
@@ -476,63 +514,87 @@
   <svg class="divider"><use href="#branch"></use></svg>
   <p>Con el corazón lleno de alegría, queremos que nos acompañes en el día en que unimos nuestras vidas. Tu presencia es, para nosotros, el regalo más importante de esta celebración.</p>
   <p class="eyebrow">Galería</p>
-  <div class="swiper gallery-swiper">
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-button-next"></div>
-    <div class="swiper-wrapper">
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285449/primera_salida_de_novios.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285449/Primer_San_Valentin.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285446/PHOTO-2019-03-06-16-54-44.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285446/PHOTO-2019-05-10-10-03-23.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285449/Primer_viaje_a_la_playa.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285445/1er_viaje_de_tren.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285448/primer_cumple_juntos.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285445/1er_fin_de_an%CC%83o.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285447/PHOTO-2020-09-12-20-11-55.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285447/PHOTO-2022-10-26-09-49-48.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285447/PHOTO-2023-08-10-19-16-18.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285446/llegada_a_Madrid.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285446/Madrid.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285448/PHOTO-2024-03-31-20-52-11.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285450/En_espera_de_Josema.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285445/Con_el_pupito.jpg">
-      </div>
-      <div class="swiper-slide">
-        <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285450/IMG_6885.jpg">
+  <div class="gallery-coverflow">
+    <div class="gallery-track">
+      <button type="button" class="gallery-nav gallery-nav-prev" aria-label="Foto anterior">
+        <svg viewBox="0 0 24 24"><path d="M15.75 19.5L8.25 12l7.5-7.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="gallery-nav gallery-nav-next" aria-label="Foto siguiente">
+        <svg viewBox="0 0 24 24"><path d="M8.25 4.5l7.5 7.5-7.5 7.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="gallery-stage">
+        <div class="gallery-card" data-index="0">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285449/primera_salida_de_novios.jpg">
+        </div>
+        <div class="gallery-card" data-index="1">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285449/Primer_San_Valentin.jpg">
+        </div>
+        <div class="gallery-card" data-index="2">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285446/PHOTO-2019-03-06-16-54-44.jpg">
+        </div>
+        <div class="gallery-card" data-index="3">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285446/PHOTO-2019-05-10-10-03-23.jpg">
+        </div>
+        <div class="gallery-card" data-index="4">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285449/Primer_viaje_a_la_playa.jpg">
+        </div>
+        <div class="gallery-card" data-index="5">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285445/1er_viaje_de_tren.jpg">
+        </div>
+        <div class="gallery-card" data-index="6">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285448/primer_cumple_juntos.jpg">
+        </div>
+        <div class="gallery-card" data-index="7">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285445/1er_fin_de_an%CC%83o.jpg">
+        </div>
+        <div class="gallery-card" data-index="8">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285447/PHOTO-2020-09-12-20-11-55.jpg">
+        </div>
+        <div class="gallery-card" data-index="9">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285447/PHOTO-2022-10-26-09-49-48.jpg">
+        </div>
+        <div class="gallery-card" data-index="10">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285447/PHOTO-2023-08-10-19-16-18.jpg">
+        </div>
+        <div class="gallery-card" data-index="11">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285446/llegada_a_Madrid.jpg">
+        </div>
+        <div class="gallery-card" data-index="12">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285446/Madrid.jpg">
+        </div>
+        <div class="gallery-card" data-index="13">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285448/PHOTO-2024-03-31-20-52-11.jpg">
+        </div>
+        <div class="gallery-card" data-index="14">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285450/En_espera_de_Josema.jpg">
+        </div>
+        <div class="gallery-card" data-index="15">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285445/Con_el_pupito.jpg">
+        </div>
+        <div class="gallery-card" data-index="16">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285450/IMG_6885.jpg">
+        </div>
       </div>
     </div>
-    <div class="swiper-pagination"></div>
+    <div class="gallery-dots">
+      <button type="button" class="gallery-dot" data-index="0" aria-label="Ir a foto 1"></button>
+      <button type="button" class="gallery-dot" data-index="1" aria-label="Ir a foto 2"></button>
+      <button type="button" class="gallery-dot" data-index="2" aria-label="Ir a foto 3"></button>
+      <button type="button" class="gallery-dot" data-index="3" aria-label="Ir a foto 4"></button>
+      <button type="button" class="gallery-dot" data-index="4" aria-label="Ir a foto 5"></button>
+      <button type="button" class="gallery-dot" data-index="5" aria-label="Ir a foto 6"></button>
+      <button type="button" class="gallery-dot" data-index="6" aria-label="Ir a foto 7"></button>
+      <button type="button" class="gallery-dot" data-index="7" aria-label="Ir a foto 8"></button>
+      <button type="button" class="gallery-dot" data-index="8" aria-label="Ir a foto 9"></button>
+      <button type="button" class="gallery-dot" data-index="9" aria-label="Ir a foto 10"></button>
+      <button type="button" class="gallery-dot" data-index="10" aria-label="Ir a foto 11"></button>
+      <button type="button" class="gallery-dot" data-index="11" aria-label="Ir a foto 12"></button>
+      <button type="button" class="gallery-dot" data-index="12" aria-label="Ir a foto 13"></button>
+      <button type="button" class="gallery-dot" data-index="13" aria-label="Ir a foto 14"></button>
+      <button type="button" class="gallery-dot" data-index="14" aria-label="Ir a foto 15"></button>
+      <button type="button" class="gallery-dot" data-index="15" aria-label="Ir a foto 16"></button>
+      <button type="button" class="gallery-dot" data-index="16" aria-label="Ir a foto 17"></button>
+    </div>
   </div>
   <div class="video-wrap">
     <video class="video-block" id="story-video" controls autoplay muted loop playsinline preload="auto">
@@ -633,36 +695,60 @@
   <p class="credit">Con todo nuestro cariño &mdash; Ale &amp; JuanSe</p>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
   (function () {
-    new Swiper('.gallery-swiper', {
-      effect: 'coverflow',
-      centeredSlides: true,
-      slidesPerView: 'auto',
-      loop: true,
-      grabCursor: true,
-      autoplay: {
-        delay: 1500,
-        disableOnInteraction: false
-      },
-      coverflowEffect: {
-        rotate: 28,
-        stretch: -10,
-        depth: 150,
-        modifier: 1,
-        slideShadows: false
-      },
-      pagination: {
-        el: '.gallery-swiper .swiper-pagination',
-        clickable: true,
-        dynamicBullets: true
-      },
-      navigation: {
-        nextEl: '.gallery-swiper .swiper-button-next',
-        prevEl: '.gallery-swiper .swiper-button-prev'
-      }
+    var stage = document.querySelector('.gallery-stage');
+    if (!stage) return;
+    var cards = Array.prototype.slice.call(stage.querySelectorAll('.gallery-card'));
+    var dots = Array.prototype.slice.call(document.querySelectorAll('.gallery-dot'));
+    var prevBtn = document.querySelector('.gallery-nav-prev');
+    var nextBtn = document.querySelector('.gallery-nav-next');
+    var track = document.querySelector('.gallery-track');
+    var n = cards.length;
+    var active = 0;
+
+    function render() {
+      cards.forEach(function (card, i) {
+        var offset = i - active;
+        if (offset > n / 2) offset -= n;
+        if (offset < -n / 2) offset += n;
+        var abs = Math.abs(offset);
+        var scale = Math.max(1 - abs * 0.15, 0.7);
+        var opacity = abs === 0 ? 1 : abs === 1 ? 0.75 : abs === 2 ? 0.5 : 0.3;
+        card.style.transform = 'translateX(' + (offset * 60) + '%) translateZ(' + (-abs * 150) + 'px) rotateY(' + (offset * 45) + 'deg) scale(' + scale + ')';
+        card.style.opacity = opacity;
+        card.style.zIndex = 100 - abs;
+        card.classList.toggle('is-active', abs === 0);
+      });
+      dots.forEach(function (dot, i) {
+        dot.classList.toggle('is-active', i === active);
+      });
+    }
+
+    function goTo(i) {
+      active = ((i % n) + n) % n;
+      render();
+    }
+
+    cards.forEach(function (card, i) {
+      card.addEventListener('click', function () { goTo(i); });
     });
+    dots.forEach(function (dot, i) {
+      dot.addEventListener('click', function () { goTo(i); });
+    });
+    prevBtn.addEventListener('click', function () { goTo(active - 1); });
+    nextBtn.addEventListener('click', function () { goTo(active + 1); });
+
+    var startX = null;
+    track.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+    track.addEventListener('touchend', function (e) {
+      if (startX === null) return;
+      var dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40) goTo(active + (dx < 0 ? 1 : -1));
+      startX = null;
+    });
+
+    render();
   })();
 
   (function () {
