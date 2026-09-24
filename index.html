@@ -327,10 +327,9 @@
     outline-offset: 1px;
   }
   .field textarea { resize: vertical; min-height: 70px; font-family: inherit; }
-  .row2 { display: flex; gap: 16px; }
-  .row2 .field { flex: 1; }
   .rsvp-actions { text-align: center; margin-top: 6px; }
-  .rsvp-note { text-align: center; font-size: 12px; color: var(--ink-soft); margin-top: 10px; }
+  .rsvp-note { text-align: center; font-size: 12px; color: var(--ink-soft); margin-top: 10px; min-height: 1.4em; }
+  .rsvp-note.error { color: var(--brass-strong); }
 
   /* ---------- Regalos ---------- */
   .gift { text-align: center; }
@@ -374,7 +373,6 @@
   footer .credit { margin-top: 8px; font-size: 12px; color: var(--ink-soft); }
 
   @media (max-width: 400px) {
-    .row2 { flex-direction: column; }
     .stat { min-width: 64px; }
   }
 
@@ -525,26 +523,13 @@
       <label for="r-name">Nombre completo</label>
       <input type="text" id="r-name" name="nombre" required>
     </div>
-    <div class="row2">
-      <div class="field">
-        <label for="r-attend">¿Asistirás?</label>
-        <select id="r-attend" name="asistencia" required>
-          <option value="Sí, ahí estaré">Sí, ahí estaré</option>
-          <option value="No podré asistir">No podré asistir</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="r-guests">N.º de personas</label>
-        <input type="number" id="r-guests" name="acompanantes" min="1" max="10" value="1" required>
-      </div>
-    </div>
     <div class="field">
-      <label for="r-msg">Mensaje para Ale &amp; JuanSe (opcional)</label>
-      <textarea id="r-msg" name="mensaje" placeholder="Un deseo, una nota, lo que quieras contarnos..."></textarea>
+      <label for="r-guests">N.º de personas</label>
+      <input type="number" id="r-guests" name="personas" min="1" max="10" value="1" required>
     </div>
     <div class="rsvp-actions">
-      <button type="submit" class="btn solid full">Confirmar por WhatsApp</button>
-      <p class="rsvp-note">Se abrirá WhatsApp con tu confirmación lista para enviar. Si no se abre, escríbenos directo al <a href="https://wa.me/593984584258" target="_blank" rel="noopener noreferrer">+593 98 458 4258</a>.</p>
+      <button type="submit" class="btn solid full">Confirmar asistencia</button>
+      <p class="rsvp-note" id="rsvp-status" aria-live="polite"></p>
     </div>
   </form>
 </section>
@@ -598,31 +583,36 @@
   })();
 
   (function () {
+    var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKn9tJexGp6gY4Y4YBY4_6j5ij6mWdrqjQxDU04vHecy0Q3TzTV2T89-QIgwP3BCBE5g/exec';
+
     var form = document.getElementById('rsvp-form');
+    var status = document.getElementById('rsvp-status');
+    var button = form.querySelector('button[type="submit"]');
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var nombre = document.getElementById('r-name').value.trim();
-      var asistencia = document.getElementById('r-attend').value;
-      var acompanantes = document.getElementById('r-guests').value;
-      var mensaje = document.getElementById('r-msg').value.trim();
+      var personas = document.getElementById('r-guests').value;
+      if (!nombre) return;
 
-      var lines = [
-        'Hola! Soy ' + nombre + ' y quiero confirmar mi asistencia a la boda de Ale y JuanSe 💛',
-        'Asistencia: ' + asistencia,
-        'Número de personas: ' + acompanantes
-      ];
-      if (mensaje) lines.push('Mensaje: ' + mensaje);
+      button.disabled = true;
+      status.textContent = 'Enviando...';
+      status.classList.remove('error');
 
-      var text = encodeURIComponent(lines.join('\n'));
-      var url = 'https://wa.me/593984584258?text=' + text;
-
-      var link = document.createElement('a');
-      link.href = url;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ nombre: nombre, personas: personas })
+      }).then(function () {
+        status.textContent = '¡Gracias, ' + nombre + '! Tu confirmación quedó registrada.';
+        form.reset();
+      }).catch(function () {
+        status.textContent = 'No pudimos enviar tu confirmación. Por favor intentá de nuevo.';
+        status.classList.add('error');
+      }).finally(function () {
+        button.disabled = false;
+      });
     });
   })();
 
