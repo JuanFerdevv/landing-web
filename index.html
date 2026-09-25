@@ -48,7 +48,7 @@
   body {
     background: var(--bg);
     color: var(--ink);
-    font-family: 'Monsieur La Doulaise', cursive;
+    font-family: 'Lora', serif;
     font-weight: 400;
     font-size: 16px;
     line-height: 1.6;
@@ -59,7 +59,7 @@
   }
 
   h1, h2, h3 {
-    font-family: 'Lora', Georgia, serif;
+    font-family: 'Monsieur La Doulaise', cursive;
     font-weight: 500;
     color: var(--ink);
     text-wrap: balance;
@@ -68,30 +68,11 @@
 
   a { color: var(--brass-strong); }
 
-  /* Monsieur La Doulaise es un script decorativo: ilegible en textos
-     chicos o informativos. Estos elementos vuelven a Lora para que
-     direcciones, horarios, datos bancarios y mensajes de estado se
-     puedan leer. */
-  .hero .place-line,
-  .stat .lbl,
-  .venue .addr,
-  .itin-content p,
-  .dresscode .note,
-  .rsvp .deadline,
-  .rsvp-note,
-  .field label,
-  .giftcard dt,
-  .giftcard dd,
-  footer .credit {
-    font-family: 'Lora', serif;
-  }
-
   .eyebrow {
-    font-family: 'Lora', serif;
-    font-size: 12px;
+    font-family: 'Monsieur La Doulaise', cursive;
+    font-size: 22px;
     font-weight: 500;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
+    letter-spacing: 0.02em;
     color: var(--olive);
     margin: 0 0 10px;
   }
@@ -242,22 +223,23 @@
     padding: 28px 20px 36px;
   }
   .hero .monogram {
-    font-family: 'Lora', serif;
-    font-style: italic;
+    font-family: 'Monsieur La Doulaise', cursive;
     font-weight: 500;
-    font-size: clamp(48px, 13vw, 68px);
+    font-size: clamp(56px, 15vw, 78px);
     letter-spacing: 0.01em;
     color: var(--brass-strong);
     margin: 0;
   }
   .hero .names {
-    font-size: clamp(30px, 7vw, 38px);
+    font-family: 'Monsieur La Doulaise', cursive;
+    font-size: clamp(34px, 8vw, 44px);
     margin-top: 6px;
   }
   .hero .tagline {
-    font-family: 'Monsieur La Doulaise', cursive;
-    font-size: 22px;
-    letter-spacing: 0.02em;
+    font-family: 'Lora', serif;
+    font-size: 13px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
     color: var(--ink-soft);
     margin-top: 14px;
   }
@@ -329,9 +311,10 @@
     background: transparent;
     border: 1px solid var(--brass);
     color: var(--brass-strong);
-    font-family: 'Monsieur La Doulaise', cursive;
-    font-size: 20px;
-    letter-spacing: 0.02em;
+    font-family: 'Lora', serif;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
     text-decoration: none;
     cursor: pointer;
     transition: background 0.15s ease, color 0.15s ease;
@@ -377,8 +360,9 @@
   /* ---------- Vestimenta ---------- */
   .dresscode { text-align: center; }
   .dresscode .code {
-    font-family: 'Monsieur La Doulaise', cursive;
-    font-size: 34px;
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 26px;
     color: var(--ink);
     margin-top: 4px;
   }
@@ -393,8 +377,8 @@
     font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--olive);
   }
   .field input, .field textarea, .field select {
-    font-family: 'Monsieur La Doulaise', cursive;
-    font-size: 22px;
+    font-family: 'Lora', serif;
+    font-size: 15px;
     font-weight: 400;
     color: var(--ink);
     background: var(--surface-2);
@@ -439,9 +423,10 @@
   }
   .giftcard .acc-row { display: flex; align-items: center; gap: 10px; }
   .copy-btn {
-    font-family: 'Monsieur La Doulaise', cursive;
-    font-size: 18px;
-    letter-spacing: 0.02em;
+    font-family: 'Lora', serif;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     background: none;
     border: 1px solid var(--border);
     color: var(--ink-soft);
@@ -453,8 +438,9 @@
   /* ---------- Footer ---------- */
   footer { text-align: center; padding-top: 40px; border-top: 1px solid var(--border); margin-top: 8px; }
   footer .hashtag {
-    font-family: 'Monsieur La Doulaise', cursive;
-    font-size: 28px;
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 20px;
     color: var(--brass-strong);
   }
   footer .credit { margin-top: 8px; font-size: 12px; color: var(--ink-soft); }
