@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ale &amp; JuanSe</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,500;1,600&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Monsieur+La+Doulaise&display=swap">
 <style>
   :root {
     --bg: #F4F0E9;
@@ -48,8 +48,8 @@
   body {
     background: var(--bg);
     color: var(--ink);
-    font-family: 'Jost', 'Segoe UI', sans-serif;
-    font-weight: 300;
+    font-family: 'Monsieur La Doulaise', cursive;
+    font-weight: 400;
     font-size: 16px;
     line-height: 1.6;
     max-width: 620px;
@@ -59,7 +59,7 @@
   }
 
   h1, h2, h3 {
-    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-family: 'Lora', Georgia, serif;
     font-weight: 500;
     color: var(--ink);
     text-wrap: balance;
@@ -68,8 +68,26 @@
 
   a { color: var(--brass-strong); }
 
+  /* Monsieur La Doulaise es un script decorativo: ilegible en textos
+     chicos o informativos. Estos elementos vuelven a Lora para que
+     direcciones, horarios, datos bancarios y mensajes de estado se
+     puedan leer. */
+  .hero .place-line,
+  .stat .lbl,
+  .venue .addr,
+  .itin-content p,
+  .dresscode .note,
+  .rsvp .deadline,
+  .rsvp-note,
+  .field label,
+  .giftcard dt,
+  .giftcard dd,
+  footer .credit {
+    font-family: 'Lora', serif;
+  }
+
   .eyebrow {
-    font-family: 'Jost', sans-serif;
+    font-family: 'Lora', serif;
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.22em;
@@ -224,7 +242,7 @@
     padding: 28px 20px 36px;
   }
   .hero .monogram {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Lora', serif;
     font-style: italic;
     font-weight: 500;
     font-size: clamp(48px, 13vw, 68px);
@@ -237,16 +255,16 @@
     margin-top: 6px;
   }
   .hero .tagline {
-    font-family: 'Jost', sans-serif;
-    font-size: 13px;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
+    font-family: 'Monsieur La Doulaise', cursive;
+    font-size: 22px;
+    letter-spacing: 0.02em;
     color: var(--ink-soft);
     margin-top: 14px;
   }
   .hero .date-line {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
+    font-weight: 300;
+    font-size: 24px;
     letter-spacing: 0.06em;
     margin-top: 18px;
     color: var(--ink);
@@ -273,9 +291,9 @@
     padding: 14px 6px 12px;
   }
   .stat .num {
-    font-family: 'Jost', sans-serif;
-    font-weight: 500;
-    font-size: 28px;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 32px;
     font-variant-numeric: tabular-nums;
     color: var(--brass-strong);
     display: block;
@@ -302,7 +320,7 @@
   .venue { text-align: center; }
   .venue h2 { font-size: 30px; }
   .venue .addr { color: var(--ink-soft); margin-top: 8px; font-size: 15px; }
-  .venue .time { margin-top: 14px; font-size: 17px; font-family: 'Cormorant Garamond', serif; color: var(--ink); }
+  .venue .time { margin-top: 14px; font-size: 19px; font-family: 'Cormorant Garamond', serif; font-weight: 300; color: var(--ink); }
 
   .btn {
     display: inline-block;
@@ -311,10 +329,9 @@
     background: transparent;
     border: 1px solid var(--brass);
     color: var(--brass-strong);
-    font-family: 'Jost', sans-serif;
-    font-size: 12px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+    font-family: 'Monsieur La Doulaise', cursive;
+    font-size: 20px;
+    letter-spacing: 0.02em;
     text-decoration: none;
     cursor: pointer;
     transition: background 0.15s ease, color 0.15s ease;
@@ -332,9 +349,9 @@
     flex: none;
     width: 58px;
     text-align: right;
-    font-family: 'Jost', sans-serif;
-    font-weight: 500;
-    font-size: 14px;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 18px;
     font-variant-numeric: tabular-nums;
     color: var(--brass-strong);
     padding-top: 3px;
@@ -360,9 +377,8 @@
   /* ---------- Vestimenta ---------- */
   .dresscode { text-align: center; }
   .dresscode .code {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 26px;
+    font-family: 'Monsieur La Doulaise', cursive;
+    font-size: 34px;
     color: var(--ink);
     margin-top: 4px;
   }
@@ -377,13 +393,18 @@
     font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--olive);
   }
   .field input, .field textarea, .field select {
-    font-family: 'Jost', sans-serif;
-    font-size: 15px;
-    font-weight: 300;
+    font-family: 'Monsieur La Doulaise', cursive;
+    font-size: 22px;
+    font-weight: 400;
     color: var(--ink);
     background: var(--surface-2);
     border: 1px solid var(--border);
     padding: 10px 12px;
+  }
+  .field input[type="number"] {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 18px;
   }
   .field input:focus-visible, .field textarea:focus-visible, .field select:focus-visible {
     outline: 2px solid var(--olive);
@@ -411,12 +432,16 @@
     color: var(--ink-soft); white-space: nowrap; padding-top: 2px;
   }
   .giftcard dd { margin: 0; font-size: 15px; color: var(--ink); }
+  #acc-number, .num-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 18px;
+  }
   .giftcard .acc-row { display: flex; align-items: center; gap: 10px; }
   .copy-btn {
-    font-family: 'Jost', sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-family: 'Monsieur La Doulaise', cursive;
+    font-size: 18px;
+    letter-spacing: 0.02em;
     background: none;
     border: 1px solid var(--border);
     color: var(--ink-soft);
@@ -428,9 +453,8 @@
   /* ---------- Footer ---------- */
   footer { text-align: center; padding-top: 40px; border-top: 1px solid var(--border); margin-top: 8px; }
   footer .hashtag {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 20px;
+    font-family: 'Monsieur La Doulaise', cursive;
+    font-size: 28px;
     color: var(--brass-strong);
   }
   footer .credit { margin-top: 8px; font-size: 12px; color: var(--ink-soft); }
@@ -685,7 +709,7 @@
       <dt>N.º cuenta</dt>
       <dd class="acc-row"><span id="acc-number">9470608</span><button type="button" class="copy-btn" id="copy-acc">Copiar</button></dd>
       <dt>Titular</dt><dd>Juan Sebastián Chediak</dd>
-      <dt>Cédula</dt><dd>1715248538</dd>
+      <dt>Cédula</dt><dd class="num-value">1715248538</dd>
     </dl>
   </div>
 </section>
