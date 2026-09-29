@@ -400,6 +400,90 @@
   .rsvp-note { text-align: center; font-size: 12px; color: var(--ink-soft); margin-top: 10px; min-height: 1.4em; }
   .rsvp-note.error { color: var(--brass-strong); }
 
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 17, 12, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 300;
+  }
+  .modal-overlay[hidden] { display: none; }
+  .modal {
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 32px 24px 28px;
+  }
+  .modal h3 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+  .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    color: var(--ink-soft);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .modal-close:hover, .modal-close:focus-visible { color: var(--brass-strong); }
+  .modal form { margin-top: 0; }
+
+  .attend-options { display: flex; flex-direction: column; gap: 8px; }
+  .attend-opt {
+    font-family: 'Lora', serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .attend-opt:hover, .attend-opt:focus-visible { border-color: var(--brass); }
+  .attend-opt.is-selected {
+    background: var(--brass);
+    border-color: var(--brass);
+    color: var(--bg);
+  }
+
+  .stepper { display: flex; align-items: center; gap: 18px; }
+  .stepper-btn {
+    width: 36px;
+    height: 36px;
+    flex: none;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stepper-btn:hover, .stepper-btn:focus-visible { border-color: var(--brass); color: var(--brass-strong); }
+  .stepper-value {
+    font-family: 'Lora', serif;
+    font-size: 20px;
+    min-width: 24px;
+    text-align: center;
+  }
+
   /* ---------- Regalos ---------- */
   .gift { text-align: center; }
   .gift p.lead { max-width: 44ch; margin: 0 auto; font-size: 15px; color: var(--ink); }
@@ -666,21 +750,42 @@
 <section class="rsvp">
   <h2>RSVP</h2>
   <p class="deadline">Por favor confirma tu asistencia antes del 30 de octubre de 2026</p>
-  <form id="rsvp-form">
-    <div class="field">
-      <label for="r-name">Nombre completo</label>
-      <input type="text" id="r-name" name="nombre" required>
-    </div>
-    <div class="field">
-      <label for="r-guests">N.º de personas</label>
-      <input type="number" id="r-guests" name="personas" min="1" max="10" value="1" required>
-    </div>
-    <div class="rsvp-actions">
-      <button type="submit" class="btn solid full">Confirmar asistencia</button>
-      <p class="rsvp-note" id="rsvp-status" aria-live="polite"></p>
-    </div>
-  </form>
+  <div class="rsvp-actions">
+    <button type="button" class="btn solid full" id="rsvp-open">Confirmar asistencia</button>
+  </div>
 </section>
+
+<div class="modal-overlay" id="rsvp-modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rsvp-modal-title">
+    <button type="button" class="modal-close" id="rsvp-modal-close" aria-label="Cerrar">&times;</button>
+    <h3 id="rsvp-modal-title">Confirma tu asistencia</h3>
+    <form id="rsvp-form">
+      <div class="field">
+        <label for="r-name">Nombre</label>
+        <input type="text" id="r-name" name="nombre" required>
+      </div>
+      <div class="field">
+        <label>¿Asistiré?</label>
+        <div class="attend-options">
+          <button type="button" class="attend-opt" id="attend-si" data-value="si">Sí, asistiré</button>
+          <button type="button" class="attend-opt" id="attend-no" data-value="no">No, lo siento no podré</button>
+        </div>
+      </div>
+      <div class="field" id="guests-field" hidden>
+        <label>Número de asistentes</label>
+        <div class="stepper">
+          <button type="button" class="stepper-btn" id="guests-minus" aria-label="Restar">&minus;</button>
+          <span class="stepper-value" id="guests-value">1</span>
+          <button type="button" class="stepper-btn" id="guests-plus" aria-label="Sumar">+</button>
+        </div>
+      </div>
+      <div class="rsvp-actions">
+        <button type="submit" class="btn solid full">Enviar</button>
+        <p class="rsvp-note" id="rsvp-status" aria-live="polite"></p>
+      </div>
+    </form>
+  </div>
+</div>
 
 <section class="gift">
   <p class="eyebrow">Regalos</p>
@@ -811,15 +916,82 @@
   (function () {
     var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKn9tJexGp6gY4Y4YBY4_6j5ij6mWdrqjQxDU04vHecy0Q3TzTV2T89-QIgwP3BCBE5g/exec';
 
+    var overlay = document.getElementById('rsvp-modal-overlay');
+    var openBtn = document.getElementById('rsvp-open');
+    var closeBtn = document.getElementById('rsvp-modal-close');
     var form = document.getElementById('rsvp-form');
     var status = document.getElementById('rsvp-status');
     var button = form.querySelector('button[type="submit"]');
+    var attendBtns = Array.prototype.slice.call(document.querySelectorAll('.attend-opt'));
+    var guestsField = document.getElementById('guests-field');
+    var guestsValue = document.getElementById('guests-value');
+    var guestsMinus = document.getElementById('guests-minus');
+    var guestsPlus = document.getElementById('guests-plus');
+    var attendValue = '';
+    var guestsCount = 1;
+
+    function openModal() {
+      overlay.hidden = false;
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      overlay.hidden = true;
+      document.body.style.overflow = '';
+    }
+    function resetForm() {
+      form.reset();
+      attendValue = '';
+      guestsCount = 1;
+      guestsValue.textContent = guestsCount;
+      guestsField.hidden = true;
+      attendBtns.forEach(function (b) { b.classList.remove('is-selected'); });
+      status.textContent = '';
+      status.classList.remove('error');
+    }
+
+    openBtn.addEventListener('click', function () {
+      resetForm();
+      openModal();
+    });
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) closeModal();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !overlay.hidden) closeModal();
+    });
+
+    attendBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        attendValue = btn.getAttribute('data-value');
+        attendBtns.forEach(function (b) { b.classList.toggle('is-selected', b === btn); });
+        guestsField.hidden = attendValue !== 'si';
+      });
+    });
+
+    guestsMinus.addEventListener('click', function () {
+      if (guestsCount > 1) {
+        guestsCount--;
+        guestsValue.textContent = guestsCount;
+      }
+    });
+    guestsPlus.addEventListener('click', function () {
+      if (guestsCount < 10) {
+        guestsCount++;
+        guestsValue.textContent = guestsCount;
+      }
+    });
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var nombre = document.getElementById('r-name').value.trim();
-      var personas = document.getElementById('r-guests').value;
-      if (!nombre) return;
+      if (!nombre || !attendValue) {
+        status.textContent = 'Completá tu nombre y si asistirás.';
+        status.classList.add('error');
+        return;
+      }
+      var personas = attendValue === 'si' ? guestsCount : 0;
+      var asistencia = attendValue === 'si' ? 'Sí' : 'No';
 
       button.disabled = true;
       status.textContent = 'Enviando...';
@@ -829,10 +1001,10 @@
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ nombre: nombre, personas: personas })
+        body: JSON.stringify({ nombre: nombre, asistencia: asistencia, personas: personas })
       }).then(function () {
         status.textContent = '¡Gracias, ' + nombre + '! Tu confirmación quedó registrada.';
-        form.reset();
+        setTimeout(closeModal, 1800);
       }).catch(function () {
         status.textContent = 'No pudimos enviar tu confirmación. Por favor intentá de nuevo.';
         status.classList.add('error');
