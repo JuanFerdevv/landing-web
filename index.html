@@ -903,7 +903,7 @@
             <input type="text" class="allergy-name">
           </div>
           <div class="field">
-            <label class="allergy-detail-label">Tipo de restricción</label>
+            <label>Tipo de restricción</label>
             <textarea class="allergy-detail" rows="2"></textarea>
           </div>
         </div>
@@ -1133,7 +1133,6 @@
         entry.querySelector('.allergy-entry-title').textContent = entries.length > 1 ? 'Persona ' + (i + 1) : '';
         entry.querySelector('.allergy-remove').hidden = entries.length === 1;
         entry.querySelector('.allergy-name-field').hidden = solo;
-        entry.querySelector('.allergy-detail-label').textContent = solo ? 'Tipo de alergia' : 'Tipo de restricción';
       });
       allergyAdd.hidden = entries.length >= maxAllergyEntries();
     }
@@ -1153,7 +1152,7 @@
 
     function resetAllergy() {
       allergyTitle.textContent = isSolo()
-        ? '¿Tienes alguna alergia?'
+        ? '¿Tienes alguna restricción alimenticia?'
         : '¿Alguien tiene alguna restricción alimenticia?';
       allergyForm.reset();
       allergyValue = '';
@@ -1287,7 +1286,7 @@
       var solo = isSolo();
       if (!allergyValue) {
         allergyStatus.textContent = solo
-          ? 'Indica si tienes alguna alergia.'
+          ? 'Indica si tienes alguna restricción alimenticia.'
           : 'Indica si alguien tiene alguna restricción alimenticia.';
         allergyStatus.classList.add('error');
         return;
@@ -1306,7 +1305,7 @@
         });
         if (incompleto) {
           allergyStatus.textContent = solo
-            ? 'Cuéntanos qué alergia tienes.'
+            ? 'Cuéntanos qué restricción alimenticia tienes.'
             : 'Completa el nombre y el tipo de restricción de cada persona.';
           allergyStatus.classList.add('error');
           return;
