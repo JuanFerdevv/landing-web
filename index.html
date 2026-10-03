@@ -882,7 +882,7 @@
 <div class="modal-overlay" id="allergy-modal-overlay" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="allergy-modal-title">
     <button type="button" class="modal-close" id="allergy-modal-close" aria-label="Cerrar">&times;</button>
-    <h3 id="allergy-modal-title">¿Alguien tiene alguna alergia?</h3>
+    <h3 id="allergy-modal-title">¿Alguien tiene alguna restricción alimenticia?</h3>
     <form id="allergy-form">
       <div class="attend-options inline">
         <button type="button" class="attend-opt" data-value="si">Sí</button>
@@ -903,7 +903,7 @@
             <input type="text" class="allergy-name">
           </div>
           <div class="field">
-            <label>Tipo de alergia</label>
+            <label>Tipo de restricción</label>
             <textarea class="allergy-detail" rows="2"></textarea>
           </div>
         </div>
@@ -1275,7 +1275,7 @@
       e.preventDefault();
       if (!pending) return;
       if (!allergyValue) {
-        allergyStatus.textContent = 'Indicá si alguien tiene alguna alergia.';
+        allergyStatus.textContent = 'Indicá si alguien tiene alguna restricción alimenticia.';
         allergyStatus.classList.add('error');
         return;
       }
@@ -1292,7 +1292,7 @@
           return !persona || !detalle;
         });
         if (incompleto) {
-          allergyStatus.textContent = 'Completá el nombre y el tipo de alergia de cada persona.';
+          allergyStatus.textContent = 'Completá el nombre y el tipo de restricción de cada persona.';
           allergyStatus.classList.add('error');
           return;
         }
