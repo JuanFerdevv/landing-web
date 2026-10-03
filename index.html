@@ -46,6 +46,62 @@
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
 
+  .envelope-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+  .envelope-gate.is-closing { opacity: 0; pointer-events: none; }
+  .envelope-card {
+    width: 100%;
+    max-width: 340px;
+    text-align: center;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    padding: 40px 24px 36px;
+  }
+  .envelope-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--olive);
+    color: var(--bg);
+    margin-bottom: 18px;
+  }
+  .envelope-icon svg { width: 24px; height: 24px; }
+  .envelope-name {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: clamp(26px, 7vw, 32px);
+    color: var(--brass-strong);
+    margin: 2px 0 0;
+  }
+  .envelope-couple {
+    font-family: 'Lora', serif;
+    font-size: 20px;
+    color: var(--ink);
+    margin-top: 14px;
+  }
+  .envelope-date { font-size: 15px; color: var(--ink-soft); margin-top: 6px; }
+  .envelope-sub {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--olive);
+    margin-top: 20px;
+  }
+  .envelope-card .btn { margin-top: 22px; }
+
   body {
     background: var(--bg);
     color: var(--ink);
@@ -541,6 +597,18 @@
 </head>
 <body>
 
+<div class="envelope-gate" id="envelope-gate">
+  <div class="envelope-card">
+    <span class="envelope-icon"><svg><use href="#heart"></use></svg></span>
+    <p class="eyebrow" style="text-align:center">Para</p>
+    <h2 class="envelope-name" id="envelope-name">Nuestros invitados</h2>
+    <svg class="divider small"><use href="#branch"></use></svg>
+    <p class="envelope-couple">Ale &amp; JuanSe</p>
+    <p class="envelope-date">19 de diciembre de 2026</p>
+    <p class="envelope-sub">Los invitamos cordialmente</p>
+    <button type="button" class="btn solid" id="envelope-open">Abrir</button>
+  </div>
+</div>
 
 <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
   <symbol id="branch" viewBox="0 0 200 40">
@@ -555,6 +623,9 @@
       <path d="M14 20 L9 24" /><ellipse cx="6" cy="26" rx="2.6" ry="4.6" transform="rotate(40 6 26)" />
       <path d="M186 20 L191 24" /><ellipse cx="194" cy="26" rx="2.6" ry="4.6" transform="rotate(-40 194 26)" />
     </g>
+  </symbol>
+  <symbol id="heart" viewBox="0 0 24 24">
+    <path d="M12 20.3 4.6 13c-2.1-2.1-2.1-5.5 0-7.6 2.1-2.1 5.5-2.1 7.4 0 1.9-2.1 5.3-2.1 7.4 0 2.1 2.1 2.1 5.5 0 7.6L12 20.3Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
   </symbol>
   <symbol id="camera" viewBox="0 0 24 24">
     <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
@@ -809,6 +880,27 @@
 </footer>
 
 <script>
+  (function () {
+    var gate = document.getElementById('envelope-gate');
+    var nameEl = document.getElementById('envelope-name');
+    var openBtn = document.getElementById('envelope-open');
+    if (!gate) return;
+
+    var params = new URLSearchParams(window.location.search);
+    var invitado = (params.get('invitado') || '').trim();
+    if (invitado) {
+      nameEl.textContent = invitado;
+    }
+
+    document.body.style.overflow = 'hidden';
+
+    openBtn.addEventListener('click', function () {
+      gate.classList.add('is-closing');
+      document.body.style.overflow = '';
+      setTimeout(function () { gate.hidden = true; }, 500);
+    });
+  })();
+
   (function () {
     var stage = document.querySelector('.gallery-stage');
     if (!stage) return;
