@@ -898,12 +898,12 @@
             <span class="allergy-entry-title"></span>
             <button type="button" class="allergy-remove">Quitar</button>
           </div>
-          <div class="field">
+          <div class="field allergy-name-field">
             <label>Nombre de la persona</label>
             <input type="text" class="allergy-name">
           </div>
           <div class="field">
-            <label>Tipo de restricción</label>
+            <label class="allergy-detail-label">Tipo de restricción</label>
             <textarea class="allergy-detail" rows="2"></textarea>
           </div>
         </div>
@@ -1090,6 +1090,7 @@
     var allergyList = document.getElementById('allergy-list');
     var allergyAdd = document.getElementById('allergy-add');
     var allergyTpl = document.getElementById('allergy-entry-tpl');
+    var allergyTitle = document.getElementById('allergy-modal-title');
     var allergyValue = '';
 
     // Datos de la confirmación que esperan la respuesta de alergias
@@ -1122,11 +1123,17 @@
     function maxAllergyEntries() {
       return pending ? pending.personas : 1;
     }
+    function isSolo() {
+      return maxAllergyEntries() === 1;
+    }
     function refreshAllergyEntries() {
       var entries = allergyEntries();
+      var solo = isSolo();
       entries.forEach(function (entry, i) {
         entry.querySelector('.allergy-entry-title').textContent = entries.length > 1 ? 'Persona ' + (i + 1) : '';
         entry.querySelector('.allergy-remove').hidden = entries.length === 1;
+        entry.querySelector('.allergy-name-field').hidden = solo;
+        entry.querySelector('.allergy-detail-label').textContent = solo ? 'Tipo de alergia' : 'Tipo de restricción';
       });
       allergyAdd.hidden = entries.length >= maxAllergyEntries();
     }
@@ -1145,6 +1152,9 @@
     });
 
     function resetAllergy() {
+      allergyTitle.textContent = isSolo()
+        ? '¿Tienes alguna alergia?'
+        : '¿Alguien tiene alguna restricción alimenticia?';
       allergyForm.reset();
       allergyValue = '';
       allergyDetails.hidden = true;
@@ -1168,7 +1178,7 @@
         statusEl.textContent = '¡Gracias, ' + payload.nombre + '! Tu confirmación quedó registrada.';
         setTimeout(onDone, 1800);
       }).catch(function () {
-        statusEl.textContent = 'No pudimos enviar tu confirmación. Por favor intentá de nuevo.';
+        statusEl.textContent = 'No pudimos enviar tu confirmación. Por favor intenta de nuevo.';
         statusEl.classList.add('error');
         if (onFail) onFail();
       }).finally(function () {
@@ -1253,7 +1263,7 @@
       e.preventDefault();
       var nombre = document.getElementById('r-name').value.trim();
       if (!nombre || !attendValue) {
-        status.textContent = 'Completá tu nombre y si asistirás.';
+        status.textContent = 'Completa tu nombre e indica si asistirás.';
         status.classList.add('error');
         return;
       }
@@ -1274,8 +1284,11 @@
     allergyForm.addEventListener('submit', function (e) {
       e.preventDefault();
       if (!pending) return;
+      var solo = isSolo();
       if (!allergyValue) {
-        allergyStatus.textContent = 'Indicá si alguien tiene alguna restricción alimenticia.';
+        allergyStatus.textContent = solo
+          ? 'Indica si tienes alguna alergia.'
+          : 'Indica si alguien tiene alguna restricción alimenticia.';
         allergyStatus.classList.add('error');
         return;
       }
@@ -1285,14 +1298,16 @@
         var personas = [];
         var detalles = [];
         var incompleto = allergyEntries().some(function (entry) {
-          var persona = entry.querySelector('.allergy-name').value.trim();
+          var persona = solo ? pending.nombre : entry.querySelector('.allergy-name').value.trim();
           var detalle = entry.querySelector('.allergy-detail').value.trim();
           personas.push(persona);
           detalles.push(detalle);
           return !persona || !detalle;
         });
         if (incompleto) {
-          allergyStatus.textContent = 'Completá el nombre y el tipo de restricción de cada persona.';
+          allergyStatus.textContent = solo
+            ? 'Cuéntanos qué alergia tienes.'
+            : 'Completa el nombre y el tipo de restricción de cada persona.';
           allergyStatus.classList.add('error');
           return;
         }
