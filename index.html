@@ -501,7 +501,25 @@
   .attend-options { display: flex; flex-direction: column; gap: 8px; }
   .attend-options.inline { flex-direction: row; gap: 10px; }
   .attend-options.inline .attend-opt { flex: 1; text-align: center; }
-  .allergy-details { display: flex; flex-direction: column; gap: 16px; }
+  .allergy-details { display: flex; flex-direction: column; gap: 14px; }
+  .allergy-list { display: flex; flex-direction: column; gap: 18px; }
+  .allergy-entry { display: flex; flex-direction: column; gap: 12px; }
+  .allergy-entry + .allergy-entry { border-top: 1px solid var(--border); padding-top: 16px; }
+  .allergy-entry-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .allergy-entry-title {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass-strong);
+  }
+  .allergy-remove, .allergy-add {
+    font-family: 'Lora', serif;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--brass-strong);
+  }
+  .allergy-remove { font-size: 12px; text-decoration: underline; }
+  .allergy-add { font-size: 14px; align-self: flex-start; }
+  .allergy-remove:hover, .allergy-add:hover { color: var(--ink); }
   .attend-opt {
     font-family: 'Lora', serif;
     font-size: 14px;
@@ -871,15 +889,25 @@
         <button type="button" class="attend-opt" data-value="no">No</button>
       </div>
       <div class="allergy-details" id="allergy-details" hidden>
-        <div class="field">
-          <label for="allergy-name">Nombre de la persona</label>
-          <input type="text" id="allergy-name">
-        </div>
-        <div class="field">
-          <label for="allergy-detail">Tipo de alergia</label>
-          <textarea id="allergy-detail" rows="3"></textarea>
-        </div>
+        <div class="allergy-list" id="allergy-list"></div>
+        <button type="button" class="allergy-add" id="allergy-add">+ Agregar otra persona</button>
       </div>
+      <template id="allergy-entry-tpl">
+        <div class="allergy-entry">
+          <div class="allergy-entry-head">
+            <span class="allergy-entry-title"></span>
+            <button type="button" class="allergy-remove">Quitar</button>
+          </div>
+          <div class="field">
+            <label>Nombre de la persona</label>
+            <input type="text" class="allergy-name">
+          </div>
+          <div class="field">
+            <label>Tipo de alergia</label>
+            <textarea class="allergy-detail" rows="2"></textarea>
+          </div>
+        </div>
+      </template>
       <div class="rsvp-actions">
         <button type="submit" class="btn solid full">Enviar</button>
         <p class="rsvp-note" id="allergy-status" aria-live="polite"></p>
@@ -1059,8 +1087,9 @@
     var allergyButton = allergyForm.querySelector('button[type="submit"]');
     var allergyBtns = Array.prototype.slice.call(allergyForm.querySelectorAll('.attend-opt'));
     var allergyDetails = document.getElementById('allergy-details');
-    var allergyName = document.getElementById('allergy-name');
-    var allergyDetail = document.getElementById('allergy-detail');
+    var allergyList = document.getElementById('allergy-list');
+    var allergyAdd = document.getElementById('allergy-add');
+    var allergyTpl = document.getElementById('allergy-entry-tpl');
     var allergyValue = '';
 
     // Datos de la confirmación que esperan la respuesta de alergias
@@ -1087,10 +1116,40 @@
       status.textContent = '';
       status.classList.remove('error');
     }
+    function allergyEntries() {
+      return Array.prototype.slice.call(allergyList.querySelectorAll('.allergy-entry'));
+    }
+    function maxAllergyEntries() {
+      return pending ? pending.personas : 1;
+    }
+    function refreshAllergyEntries() {
+      var entries = allergyEntries();
+      entries.forEach(function (entry, i) {
+        entry.querySelector('.allergy-entry-title').textContent = entries.length > 1 ? 'Persona ' + (i + 1) : '';
+        entry.querySelector('.allergy-remove').hidden = entries.length === 1;
+      });
+      allergyAdd.hidden = entries.length >= maxAllergyEntries();
+    }
+    function addAllergyEntry() {
+      var entry = allergyTpl.content.firstElementChild.cloneNode(true);
+      entry.querySelector('.allergy-remove').addEventListener('click', function () {
+        entry.remove();
+        refreshAllergyEntries();
+      });
+      allergyList.appendChild(entry);
+      refreshAllergyEntries();
+      return entry;
+    }
+    allergyAdd.addEventListener('click', function () {
+      addAllergyEntry().querySelector('.allergy-name').focus();
+    });
+
     function resetAllergy() {
       allergyForm.reset();
       allergyValue = '';
       allergyDetails.hidden = true;
+      allergyList.innerHTML = '';
+      addAllergyEntry();
       allergyBtns.forEach(function (b) { b.classList.remove('is-selected'); });
       allergyStatus.textContent = '';
       allergyStatus.classList.remove('error');
@@ -1223,14 +1282,21 @@
 
       var payload;
       if (allergyValue === 'si') {
-        var persona = allergyName.value.trim();
-        var detalle = allergyDetail.value.trim();
-        if (!persona || !detalle) {
-          allergyStatus.textContent = 'Completá el nombre y el tipo de alergia.';
+        var personas = [];
+        var detalles = [];
+        var incompleto = allergyEntries().some(function (entry) {
+          var persona = entry.querySelector('.allergy-name').value.trim();
+          var detalle = entry.querySelector('.allergy-detail').value.trim();
+          personas.push(persona);
+          detalles.push(detalle);
+          return !persona || !detalle;
+        });
+        if (incompleto) {
+          allergyStatus.textContent = 'Completá el nombre y el tipo de alergia de cada persona.';
           allergyStatus.classList.add('error');
           return;
         }
-        payload = withAllergy(pending, 'Sí', persona, detalle);
+        payload = withAllergy(pending, 'Sí', personas.join('; '), detalles.join('; '));
       } else {
         payload = withAllergy(pending, 'No', '', '');
       }
