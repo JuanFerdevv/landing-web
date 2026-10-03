@@ -499,6 +499,9 @@
   .modal form { margin-top: 0; }
 
   .attend-options { display: flex; flex-direction: column; gap: 8px; }
+  .attend-options.inline { flex-direction: row; gap: 10px; }
+  .attend-options.inline .attend-opt { flex: 1; text-align: center; }
+  .allergy-details { display: flex; flex-direction: column; gap: 16px; }
   .attend-opt {
     font-family: 'Lora', serif;
     font-size: 14px;
@@ -851,8 +854,35 @@
         </div>
       </div>
       <div class="rsvp-actions">
-        <button type="submit" class="btn solid full">Enviar</button>
+        <button type="submit" class="btn solid full" id="rsvp-submit">Enviar</button>
         <p class="rsvp-note" id="rsvp-status" aria-live="polite"></p>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="allergy-modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="allergy-modal-title">
+    <button type="button" class="modal-close" id="allergy-modal-close" aria-label="Cerrar">&times;</button>
+    <h3 id="allergy-modal-title">¿Alguien tiene alguna alergia?</h3>
+    <form id="allergy-form">
+      <div class="attend-options inline">
+        <button type="button" class="attend-opt" data-value="si">Sí</button>
+        <button type="button" class="attend-opt" data-value="no">No</button>
+      </div>
+      <div class="allergy-details" id="allergy-details" hidden>
+        <div class="field">
+          <label for="allergy-name">Nombre de la persona</label>
+          <input type="text" id="allergy-name">
+        </div>
+        <div class="field">
+          <label for="allergy-detail">Tipo de alergia</label>
+          <textarea id="allergy-detail" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="rsvp-actions">
+        <button type="submit" class="btn solid full">Enviar</button>
+        <p class="rsvp-note" id="allergy-status" aria-live="polite"></p>
       </div>
     </form>
   </div>
@@ -1013,8 +1043,8 @@
     var closeBtn = document.getElementById('rsvp-modal-close');
     var form = document.getElementById('rsvp-form');
     var status = document.getElementById('rsvp-status');
-    var button = form.querySelector('button[type="submit"]');
-    var attendBtns = Array.prototype.slice.call(document.querySelectorAll('.attend-opt'));
+    var button = document.getElementById('rsvp-submit');
+    var attendBtns = Array.prototype.slice.call(form.querySelectorAll('.attend-opt'));
     var guestsField = document.getElementById('guests-field');
     var guestsValue = document.getElementById('guests-value');
     var guestsMinus = document.getElementById('guests-minus');
@@ -1022,35 +1052,112 @@
     var attendValue = '';
     var guestsCount = 1;
 
-    function openModal() {
-      overlay.hidden = false;
+    var allergyOverlay = document.getElementById('allergy-modal-overlay');
+    var allergyCloseBtn = document.getElementById('allergy-modal-close');
+    var allergyForm = document.getElementById('allergy-form');
+    var allergyStatus = document.getElementById('allergy-status');
+    var allergyButton = allergyForm.querySelector('button[type="submit"]');
+    var allergyBtns = Array.prototype.slice.call(allergyForm.querySelectorAll('.attend-opt'));
+    var allergyDetails = document.getElementById('allergy-details');
+    var allergyName = document.getElementById('allergy-name');
+    var allergyDetail = document.getElementById('allergy-detail');
+    var allergyValue = '';
+
+    // Datos de la confirmación que esperan la respuesta de alergias
+    // antes de enviarse, para que quede una sola fila por invitado.
+    var pending = null;
+
+    function openModal(el) {
+      el.hidden = false;
       document.body.style.overflow = 'hidden';
     }
-    function closeModal() {
-      overlay.hidden = true;
+    function closeModal(el) {
+      el.hidden = true;
       document.body.style.overflow = '';
     }
-    function resetForm() {
+
+    function resetRsvp() {
       form.reset();
       attendValue = '';
       guestsCount = 1;
       guestsValue.textContent = guestsCount;
       guestsField.hidden = true;
       attendBtns.forEach(function (b) { b.classList.remove('is-selected'); });
+      button.textContent = 'Enviar';
       status.textContent = '';
       status.classList.remove('error');
     }
+    function resetAllergy() {
+      allergyForm.reset();
+      allergyValue = '';
+      allergyDetails.hidden = true;
+      allergyBtns.forEach(function (b) { b.classList.remove('is-selected'); });
+      allergyStatus.textContent = '';
+      allergyStatus.classList.remove('error');
+    }
+
+    function send(payload, statusEl, btnEl, onDone, onFail) {
+      btnEl.disabled = true;
+      statusEl.textContent = 'Enviando...';
+      statusEl.classList.remove('error');
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload)
+      }).then(function () {
+        statusEl.textContent = '¡Gracias, ' + payload.nombre + '! Tu confirmación quedó registrada.';
+        setTimeout(onDone, 1800);
+      }).catch(function () {
+        statusEl.textContent = 'No pudimos enviar tu confirmación. Por favor intentá de nuevo.';
+        statusEl.classList.add('error');
+        if (onFail) onFail();
+      }).finally(function () {
+        btnEl.disabled = false;
+      });
+    }
+
+    function withAllergy(data, tiene, persona, detalle) {
+      return {
+        nombre: data.nombre,
+        asistencia: data.asistencia,
+        personas: data.personas,
+        alergia: tiene,
+        personaAlergia: persona,
+        detalleAlergia: detalle
+      };
+    }
+
+    // Si cierran el modal de alergias sin responder, la asistencia igual se registra.
+    function abandonAllergy() {
+      if (pending) {
+        fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(withAllergy(pending, '', '', ''))
+        });
+        pending = null;
+      }
+      closeModal(allergyOverlay);
+    }
 
     openBtn.addEventListener('click', function () {
-      resetForm();
-      openModal();
+      resetRsvp();
+      openModal(overlay);
     });
-    closeBtn.addEventListener('click', closeModal);
+    closeBtn.addEventListener('click', function () { closeModal(overlay); });
     overlay.addEventListener('click', function (e) {
-      if (e.target === overlay) closeModal();
+      if (e.target === overlay) closeModal(overlay);
+    });
+    allergyCloseBtn.addEventListener('click', abandonAllergy);
+    allergyOverlay.addEventListener('click', function (e) {
+      if (e.target === allergyOverlay) abandonAllergy();
     });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && !overlay.hidden) closeModal();
+      if (e.key !== 'Escape') return;
+      if (!allergyOverlay.hidden) abandonAllergy();
+      else if (!overlay.hidden) closeModal(overlay);
     });
 
     attendBtns.forEach(function (btn) {
@@ -1058,6 +1165,7 @@
         attendValue = btn.getAttribute('data-value');
         attendBtns.forEach(function (b) { b.classList.toggle('is-selected', b === btn); });
         guestsField.hidden = attendValue !== 'si';
+        button.textContent = attendValue === 'si' ? 'Siguiente' : 'Enviar';
       });
     });
 
@@ -1074,6 +1182,14 @@
       }
     });
 
+    allergyBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        allergyValue = btn.getAttribute('data-value');
+        allergyBtns.forEach(function (b) { b.classList.toggle('is-selected', b === btn); });
+        allergyDetails.hidden = allergyValue !== 'si';
+      });
+    });
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var nombre = document.getElementById('r-name').value.trim();
@@ -1082,26 +1198,49 @@
         status.classList.add('error');
         return;
       }
-      var personas = attendValue === 'si' ? guestsCount : 0;
-      var asistencia = attendValue === 'si' ? 'Sí' : 'No';
 
-      button.disabled = true;
-      status.textContent = 'Enviando...';
-      status.classList.remove('error');
+      if (attendValue === 'no') {
+        send(withAllergy({ nombre: nombre, asistencia: 'No', personas: 0 }, '', '', ''), status, button, function () {
+          closeModal(overlay);
+        });
+        return;
+      }
 
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ nombre: nombre, asistencia: asistencia, personas: personas })
-      }).then(function () {
-        status.textContent = '¡Gracias, ' + nombre + '! Tu confirmación quedó registrada.';
-        setTimeout(closeModal, 1800);
-      }).catch(function () {
-        status.textContent = 'No pudimos enviar tu confirmación. Por favor intentá de nuevo.';
-        status.classList.add('error');
-      }).finally(function () {
-        button.disabled = false;
+      pending = { nombre: nombre, asistencia: 'Sí', personas: guestsCount };
+      closeModal(overlay);
+      resetAllergy();
+      openModal(allergyOverlay);
+    });
+
+    allergyForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!pending) return;
+      if (!allergyValue) {
+        allergyStatus.textContent = 'Indicá si alguien tiene alguna alergia.';
+        allergyStatus.classList.add('error');
+        return;
+      }
+
+      var payload;
+      if (allergyValue === 'si') {
+        var persona = allergyName.value.trim();
+        var detalle = allergyDetail.value.trim();
+        if (!persona || !detalle) {
+          allergyStatus.textContent = 'Completá el nombre y el tipo de alergia.';
+          allergyStatus.classList.add('error');
+          return;
+        }
+        payload = withAllergy(pending, 'Sí', persona, detalle);
+      } else {
+        payload = withAllergy(pending, 'No', '', '');
+      }
+
+      var sending = pending;
+      pending = null;
+      send(payload, allergyStatus, allergyButton, function () {
+        closeModal(allergyOverlay);
+      }, function () {
+        pending = sending;
       });
     });
   })();
