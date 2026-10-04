@@ -35,11 +35,33 @@
     align-items: center;
     justify-content: center;
     padding: 24px;
+    overflow: hidden;
     opacity: 1;
     transition: opacity 0.5s ease;
   }
   .envelope-gate.is-closing { opacity: 0; pointer-events: none; }
+  .envelope-ambient, .envelope-burst {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .envelope-burst { z-index: 2; }
+  .petal { position: absolute; line-height: 0; }
+  .petal svg { width: 1em; height: 1em; fill: currentColor; }
+  .envelope-ambient .petal {
+    top: -30px;
+    animation: ambient-fall var(--dur) ease-in-out var(--delay) infinite;
+  }
+  .envelope-burst .petal {
+    left: 50%;
+    top: 50%;
+    opacity: 0;
+    animation: particle-burst 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) var(--delay) forwards;
+  }
   .envelope-card {
+    position: relative;
+    z-index: 1;
     width: 100%;
     max-width: 340px;
     text-align: center;
@@ -47,6 +69,8 @@
     background: var(--surface-2);
     padding: 40px 24px 36px;
   }
+  .envelope-gate.is-leaving .envelope-card { animation: envelope-away 0.8s ease-in forwards; }
+  .envelope-seal { position: relative; display: inline-block; margin-bottom: 18px; }
   .envelope-icon {
     display: inline-flex;
     align-items: center;
@@ -56,9 +80,50 @@
     border-radius: 50%;
     background: var(--title);
     color: var(--button-text);
-    margin-bottom: 18px;
   }
   .envelope-icon svg { width: 24px; height: 24px; }
+  .seal-ring {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 56px;
+    height: 56px;
+    border: 3px solid var(--title);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .envelope-gate.is-opening .envelope-icon { animation: seal-break 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+  .envelope-gate.is-opening .seal-ring { animation: seal-ring 0.6s ease-out forwards; }
+
+  @keyframes ambient-fall {
+    0% { transform: translateY(-8vh) translateX(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.5; }
+    50% { transform: translateY(48vh) translateX(var(--sway, 20px)) rotate(180deg); opacity: 0.6; }
+    92% { opacity: 0.45; }
+    100% { transform: translateY(105vh) translateX(0) rotate(360deg); opacity: 0; }
+  }
+  @keyframes seal-break {
+    0% { transform: scale(1) rotate(0deg); opacity: 1; filter: brightness(1); }
+    30% { transform: scale(1.15) rotate(5deg); opacity: 0.9; filter: brightness(1.3); }
+    60% { transform: scale(1.05) rotate(-3deg); opacity: 0.5; filter: brightness(1.5); }
+    100% { transform: scale(0) rotate(15deg); opacity: 0; filter: brightness(2); }
+  }
+  @keyframes seal-ring {
+    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.8; }
+    100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+  }
+  @keyframes envelope-away {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    15% { transform: translateY(10px) rotate(0.5deg); opacity: 1; }
+    100% { transform: translateY(-120vh) rotate(-2deg); opacity: 0; }
+  }
+  @keyframes particle-burst {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0) rotate(0deg); }
+    15% { opacity: 1; transform: translate(-50%, -50%) scale(1.3) rotate(var(--rot-start, 15deg)); }
+    100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.6) rotate(var(--rot-end, 180deg)); }
+  }
   .envelope-name {
     font-family: 'Lora', serif;
     font-style: italic;
@@ -66,13 +131,7 @@
     color: var(--title);
     margin: 2px 0 0;
   }
-  .envelope-couple {
-    font-family: 'Lora', serif;
-    font-size: 20px;
-    color: var(--title);
-    margin-top: 14px;
-  }
-  .envelope-date { font-size: 15px; color: var(--ink-soft); margin-top: 6px; }
+  .envelope-date { font-size: 15px; color: var(--ink-soft); margin-top: 14px; }
   .envelope-sub {
     font-size: 12px;
     letter-spacing: 0.14em;
@@ -565,22 +624,27 @@
 
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
+    .envelope-ambient, .envelope-burst { display: none; }
   }
 </style>
 </head>
 <body>
 
 <div class="envelope-gate" id="envelope-gate">
+  <div class="envelope-ambient" id="envelope-ambient" aria-hidden="true"></div>
   <div class="envelope-card">
-    <span class="envelope-icon"><svg><use href="#heart"></use></svg></span>
+    <span class="envelope-seal">
+      <span class="envelope-icon"><svg><use href="#heart"></use></svg></span>
+      <span class="seal-ring" aria-hidden="true"></span>
+    </span>
     <p class="eyebrow" style="text-align:center">Para</p>
     <h2 class="envelope-name" id="envelope-name">Nuestros invitados</h2>
     <svg class="divider small"><use href="#branch"></use></svg>
-    <p class="envelope-couple">Ale &amp; JuanSe</p>
     <p class="envelope-date">19 de diciembre de 2026</p>
     <p class="envelope-sub">Los invitamos cordialmente</p>
     <button type="button" class="btn solid" id="envelope-open">Abrir</button>
   </div>
+  <div class="envelope-burst" id="envelope-burst" aria-hidden="true"></div>
 </div>
 
 <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
@@ -595,6 +659,16 @@
       <path d="M160 20 L166 26" /><ellipse cx="170" cy="29" rx="3.4" ry="6" transform="rotate(-40 170 29)" />
       <path d="M14 20 L9 24" /><ellipse cx="6" cy="26" rx="2.6" ry="4.6" transform="rotate(40 6 26)" />
       <path d="M186 20 L191 24" /><ellipse cx="194" cy="26" rx="2.6" ry="4.6" transform="rotate(-40 194 26)" />
+    </g>
+  </symbol>
+  <symbol id="petal-flower" viewBox="0 0 24 24">
+    <g>
+      <ellipse cx="12" cy="5" rx="2.2" ry="4.5" />
+      <ellipse cx="12" cy="5" rx="2.2" ry="4.5" transform="rotate(60 12 12)" />
+      <ellipse cx="12" cy="5" rx="2.2" ry="4.5" transform="rotate(120 12 12)" />
+      <ellipse cx="12" cy="5" rx="2.2" ry="4.5" transform="rotate(180 12 12)" />
+      <ellipse cx="12" cy="5" rx="2.2" ry="4.5" transform="rotate(240 12 12)" />
+      <ellipse cx="12" cy="5" rx="2.2" ry="4.5" transform="rotate(300 12 12)" />
     </g>
   </symbol>
   <symbol id="heart" viewBox="0 0 24 24">
@@ -866,6 +940,8 @@
     var gate = document.getElementById('envelope-gate');
     var nameEl = document.getElementById('envelope-name');
     var openBtn = document.getElementById('envelope-open');
+    var ambient = document.getElementById('envelope-ambient');
+    var burstLayer = document.getElementById('envelope-burst');
     if (!gate) return;
 
     var params = new URLSearchParams(window.location.search);
@@ -876,10 +952,62 @@
 
     document.body.style.overflow = 'hidden';
 
-    openBtn.addEventListener('click', function () {
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var PETAL_COLORS = ['#797454', '#A39E7A', '#C8BBA6', '#825C42'];
+
+    function rand(min, max) { return min + Math.random() * (max - min); }
+    function petal() {
+      var el = document.createElement('div');
+      el.className = 'petal';
+      el.style.fontSize = rand(10, 21) + 'px';
+      el.style.color = PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)];
+      el.innerHTML = '<svg><use href="#petal-flower"></use></svg>';
+      return el;
+    }
+
+    if (!reduceMotion) {
+      for (var i = 0; i < 12; i++) {
+        var p = petal();
+        var dur = rand(18, 25);
+        p.style.left = rand(0, 100) + '%';
+        p.style.setProperty('--dur', dur + 's');
+        p.style.setProperty('--delay', -rand(0, dur) + 's');
+        p.style.setProperty('--sway', rand(-30, 30) + 'px');
+        ambient.appendChild(p);
+      }
+    }
+
+    function burst() {
+      for (var i = 0; i < 30; i++) {
+        var p = petal();
+        var angle = rand(0, Math.PI * 2);
+        var dist = rand(80, 260);
+        p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+        p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+        p.style.setProperty('--rot-start', rand(-20, 20) + 'deg');
+        p.style.setProperty('--rot-end', rand(-200, 200) + 'deg');
+        p.style.setProperty('--delay', rand(0, 0.15) + 's');
+        burstLayer.appendChild(p);
+      }
+    }
+
+    function reveal() {
       gate.classList.add('is-closing');
       document.body.style.overflow = '';
       setTimeout(function () { gate.hidden = true; }, 500);
+    }
+
+    // Misma secuencia que la referencia: el sello se rompe (0.5s), luego
+    // la tarjeta sale volando con la explosión de pétalos (0.8s) y se revela la página.
+    openBtn.addEventListener('click', function () {
+      openBtn.disabled = true;
+      if (reduceMotion) { reveal(); return; }
+      gate.classList.add('is-opening');
+      setTimeout(function () {
+        gate.classList.add('is-leaving');
+        burst();
+      }, 500);
+      setTimeout(reveal, 1300);
     });
   })();
 
