@@ -613,22 +613,56 @@
     right: 16px;
     bottom: 16px;
     z-index: 250;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     border: none;
+    padding: 0;
+    background: none;
+    cursor: pointer;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .music-toggle:hover { transform: scale(1.1); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
+  .music-toggle:active { transform: scale(0.95); }
+  .music-toggle:focus-visible { outline: 2px solid var(--button); outline-offset: 3px; }
+  .music-disc {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
     background: var(--button);
-    color: var(--button-text);
+    background: linear-gradient(to bottom right,
+      color-mix(in srgb, var(--button) 80%, transparent),
+      var(--button),
+      color-mix(in srgb, var(--button) 87%, transparent));
+  }
+  .music-disc-ring { position: absolute; inset: 4px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.2); }
+  .music-disc-gloss {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(to top right, rgba(255, 255, 255, 0.3), transparent, transparent);
+  }
+  .music-toggle.is-playing .music-disc { animation: spin-cd 3s linear infinite; }
+  .music-icon {
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(58, 52, 42, 0.25);
+    color: var(--button-text);
   }
-  .music-toggle:hover, .music-toggle:focus-visible { background: var(--button-strong); }
-  .music-toggle:focus-visible { outline: 2px solid var(--button); outline-offset: 2px; }
-  .music-toggle svg { width: 20px; height: 20px; }
+  .music-note { width: 20px; height: 20px; fill: currentColor; }
+  .music-bars { display: none; align-items: flex-end; gap: 2px; height: 16px; }
+  .music-bars i { width: 4px; border-radius: 999px; background: currentColor; animation: dance 0.4s ease-in-out infinite; }
+  .music-bars i:nth-child(1) { height: 60%; }
+  .music-bars i:nth-child(2) { height: 100%; animation-delay: 0.1s; }
+  .music-bars i:nth-child(3) { height: 40%; animation-delay: 0.2s; }
+  .music-bars i:nth-child(4) { height: 80%; animation-delay: 0.3s; }
+  .music-toggle.is-playing .music-bars { display: flex; }
+  .music-toggle.is-playing .music-note { display: none; }
+  @keyframes spin-cd { to { transform: rotate(360deg); } }
+  @keyframes dance { 0%, 100% { height: 20%; } 50% { height: 100%; } }
 
   /* ---------- Footer ---------- */
   footer { text-align: center; padding-top: 40px; border-top: 1px solid var(--border); margin-top: 8px; }
@@ -647,6 +681,7 @@
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
     .envelope-ambient, .envelope-burst { display: none; }
+    .music-toggle.is-playing .music-disc, .music-bars i { animation: none; }
   }
 </style>
 </head>
@@ -685,20 +720,6 @@
   </symbol>
   <symbol id="petal-heart" viewBox="0 0 24 24">
     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-  </symbol>
-  <symbol id="vol-on" viewBox="0 0 24 24">
-    <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
-      <path d="M4 9.5v5h3.5L13 19V5L7.5 9.5Z" />
-      <path d="M17 9a4.2 4.2 0 0 1 0 6" />
-      <path d="M19.3 6.7a7.7 7.7 0 0 1 0 10.6" />
-    </g>
-  </symbol>
-  <symbol id="vol-off" viewBox="0 0 24 24">
-    <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
-      <path d="M4 9.5v5h3.5L13 19V5L7.5 9.5Z" />
-      <path d="M16.5 10 20.5 14" />
-      <path d="M20.5 10 16.5 14" />
-    </g>
   </symbol>
   <symbol id="heart" viewBox="0 0 24 24">
     <path d="M12 20.3 4.6 13c-2.1-2.1-2.1-5.5 0-7.6 2.1-2.1 5.5-2.1 7.4 0 1.9-2.1 5.3-2.1 7.4 0 2.1 2.1 2.1 5.5 0 7.6L12 20.3Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
@@ -969,7 +990,11 @@
   <source src="https://res.cloudinary.com/tcdnm8vm/video/upload/v1791078296/audio-video-45s.mp3" type="audio/mpeg">
 </audio>
 <button type="button" class="music-toggle" id="music-toggle" aria-label="Pausar música" hidden>
-  <svg><use id="music-icon" href="#vol-on"></use></svg>
+  <span class="music-disc"><span class="music-disc-ring"></span><span class="music-disc-gloss"></span></span>
+  <span class="music-icon" aria-hidden="true">
+    <span class="music-bars"><i></i><i></i><i></i><i></i></span>
+    <svg class="music-note" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" /></svg>
+  </span>
 </button>
 
 <script>
@@ -1051,14 +1076,13 @@
   (function () {
     var music = document.getElementById('bg-music');
     var toggle = document.getElementById('music-toggle');
-    var icon = document.getElementById('music-icon');
     var openBtn = document.getElementById('envelope-open');
     if (!music || !toggle || !openBtn) return;
     var wantsMusic = true;
 
     function sync() {
       var playing = !music.paused;
-      icon.setAttribute('href', playing ? '#vol-on' : '#vol-off');
+      toggle.classList.toggle('is-playing', playing);
       toggle.setAttribute('aria-label', playing ? 'Pausar música' : 'Reproducir música');
     }
     function play() {
