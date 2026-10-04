@@ -855,7 +855,7 @@
         </div>
       </div>
       <div class="field" id="guests-field" hidden>
-        <label>Número de asistentes</label>
+        <label id="guests-label">Número de asistentes</label>
         <div class="stepper">
           <button type="button" class="stepper-btn" id="guests-minus" aria-label="Restar">&minus;</button>
           <span class="stepper-value" id="guests-value">1</span>
@@ -1124,6 +1124,11 @@
     var guestsPlus = document.getElementById('guests-plus');
     var attendValue = '';
     var guestsCount = 1;
+    var cupos = parseInt(new URLSearchParams(window.location.search).get('cupos'), 10);
+    var maxGuests = cupos >= 1 && cupos <= 10 ? cupos : 10;
+    if (cupos >= 1 && cupos <= 10 && maxGuests > 1) {
+      document.getElementById('guests-label').textContent = 'Número de asistentes (hasta ' + maxGuests + ')';
+    }
 
     var allergyOverlay = document.getElementById('allergy-modal-overlay');
     var allergyCloseBtn = document.getElementById('allergy-modal-close');
@@ -1277,7 +1282,7 @@
       btn.addEventListener('click', function () {
         attendValue = btn.getAttribute('data-value');
         attendBtns.forEach(function (b) { b.classList.toggle('is-selected', b === btn); });
-        guestsField.hidden = attendValue !== 'si';
+        guestsField.hidden = attendValue !== 'si' || maxGuests === 1;
         button.textContent = attendValue === 'si' ? 'Siguiente' : 'Enviar';
       });
     });
@@ -1289,7 +1294,7 @@
       }
     });
     guestsPlus.addEventListener('click', function () {
-      if (guestsCount < 10) {
+      if (guestsCount < maxGuests) {
         guestsCount++;
         guestsValue.textContent = guestsCount;
       }
