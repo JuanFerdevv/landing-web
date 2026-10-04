@@ -31,9 +31,11 @@ No crear carpetas de build ni agregar `package.json`/dependencias salvo que el d
 
 ## Deploy
 
-- **URL de producción**: https://landingboda-landingboda-pn8vrl-da8444-13-140-162-46.sslip.io
+- **URL de producción**: https://boda-alejuanse.site (dominio propio, detrás de Cloudflare, con HTTPS; `http://` redirige a `https://`).
+  - Los links personalizados del sobre digital usan esta URL: `https://boda-alejuanse.site/?invitado=Nombre`.
+  - `www.boda-alejuanse.site` todavía no está configurado en Dokploy (devuelve 404).
+  - La URL temporal anterior (`landingboda-landingboda-pn8vrl-da8444-13-140-162-46.sslip.io`) ya no se usa para compartir.
 - Desplegado en **Dokploy** (build type **Static**, sirve el repo directo con NGINX vía un `Dockerfile` que genera Dokploy automáticamente — no hay `Dockerfile` en el repo).
 - **Trigger**: cada `git push` a `main` redeploya solo (Trigger Type: On Push).
-- El dominio es un subdominio temporal de `sslip.io` (no soporta HTTPS real); cuando haya un dominio propio, actualizar esta URL.
 - **Rama de trabajo**: `main` — no hay otras ramas ni entornos de staging, todo lo que se pushea ahí queda en producción directo.
 - Los colaboradores del repo con permiso de escritura pueden hacer `commit` y `push` a `main` directamente cuando necesiten disparar un deploy — no hace falta pasar por Pull Request para publicar cambios.
