@@ -661,6 +661,9 @@
       <path d="M186 20 L191 24" /><ellipse cx="194" cy="26" rx="2.6" ry="4.6" transform="rotate(-40 194 26)" />
     </g>
   </symbol>
+  <symbol id="petal-heart" viewBox="0 0 24 24">
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+  </symbol>
   <symbol id="petal-flower" viewBox="0 0 24 24">
     <g>
       <ellipse cx="12" cy="5" rx="2.2" ry="4.5" />
@@ -956,18 +959,18 @@
     var PETAL_COLORS = ['#797454', '#A39E7A', '#C8BBA6', '#825C42'];
 
     function rand(min, max) { return min + Math.random() * (max - min); }
-    function petal() {
+    function petal(shape) {
       var el = document.createElement('div');
       el.className = 'petal';
       el.style.fontSize = rand(10, 21) + 'px';
       el.style.color = PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)];
-      el.innerHTML = '<svg><use href="#petal-flower"></use></svg>';
+      el.innerHTML = '<svg><use href="#' + shape + '"></use></svg>';
       return el;
     }
 
     if (!reduceMotion) {
       for (var i = 0; i < 12; i++) {
-        var p = petal();
+        var p = petal('petal-heart');
         var dur = rand(18, 25);
         p.style.left = rand(0, 100) + '%';
         p.style.setProperty('--dur', dur + 's');
@@ -979,7 +982,7 @@
 
     function burst() {
       for (var i = 0; i < 30; i++) {
-        var p = petal();
+        var p = petal('petal-flower');
         var angle = rand(0, Math.PI * 2);
         var dist = rand(80, 260);
         p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
