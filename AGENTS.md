@@ -32,7 +32,7 @@ No crear carpetas de build ni agregar `package.json`/dependencias salvo que el d
 ## Deploy
 
 - **URL de producción**: https://boda-alejuanse.site (dominio propio, detrás de Cloudflare, con HTTPS; `http://` redirige a `https://`).
-  - Los links personalizados del sobre digital usan esta URL: `https://boda-alejuanse.site/?invitado=Nombre`.
+  - Los links personalizados del sobre digital usan esta URL con un código cifrado: `https://boda-alejuanse.site/?c=<código>`. El código lleva nombre y cupos firmados (no se leen ni se pueden editar). Se generan con `python3 herramientas/links_invitados.py "Nombre" "+593 ..." <cupos>` o `--csv lista.csv`, que también arma el link de WhatsApp. Sin código válido la invitación abre sin nombre y con 1 cupo; `?invitado=Nombre` sigue mostrando el nombre (links viejos) pero ya no acepta `cupos`.
   - `www.boda-alejuanse.site` todavía no está configurado en Dokploy (devuelve 404).
   - La URL temporal anterior (`landingboda-landingboda-pn8vrl-da8444-13-140-162-46.sslip.io`) ya no se usa para compartir.
 - Desplegado en **Dokploy** (build type **Static**, sirve el repo directo con NGINX vía un `Dockerfile` que genera Dokploy automáticamente — no hay `Dockerfile` en el repo).

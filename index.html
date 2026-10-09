@@ -1027,6 +1027,51 @@
 </button>
 
 <script>
+  // El link de cada invitado lleva ?c=<código>: nombre y cupos cifrados con una
+  // firma, para que no se lean ni se puedan editar. Sin código válido: 1 cupo.
+  var INVITACION = (function () {
+    var CLAVE = 'f1p0310s5p1YJCzav8Nq6A8I';
+    function utf8(str) { return Array.prototype.slice.call(new TextEncoder().encode(str)); }
+    function fnv(arr) {
+      var h = 2166136261;
+      for (var i = 0; i < arr.length; i++) { h ^= arr[i]; h = Math.imul(h, 16777619) >>> 0; }
+      return h >>> 0;
+    }
+    function descifrar(codigo) {
+      try {
+        var b64 = codigo.replace(/-/g, '+').replace(/_/g, '/');
+        while (b64.length % 4) b64 += '=';
+        var raw = atob(b64), data = [];
+        for (var i = 0; i < raw.length; i++) data.push(raw.charCodeAt(i));
+        if (data.length < 8) return null;
+        var clave = utf8(CLAVE);
+        var nonce = data[0];
+        var s = (fnv(clave.concat([nonce])) | 1) >>> 0;
+        var plano = data.slice(1, -4).map(function (c) {
+          s ^= s << 13; s ^= s >>> 17; s ^= s << 5; s >>>= 0;
+          return c ^ (s & 255);
+        });
+        var t = data.slice(-4);
+        var firma = ((t[0] << 24) | (t[1] << 16) | (t[2] << 8) | t[3]) >>> 0;
+        if (fnv(clave.concat([nonce], plano)) !== firma) return null;
+        var texto = new TextDecoder().decode(new Uint8Array(plano));
+        var sep = texto.indexOf('|');
+        var cupos = parseInt(texto.slice(0, sep), 10);
+        var nombre = texto.slice(sep + 1).trim();
+        if (sep < 1 || !(cupos >= 1 && cupos <= 10) || !nombre) return null;
+        return { nombre: nombre, cupos: cupos };
+      } catch (e) {
+        return null;
+      }
+    }
+    var params = new URLSearchParams(window.location.search);
+    var inv = params.get('c') ? descifrar(params.get('c')) : null;
+    return {
+      nombre: inv ? inv.nombre : (params.get('invitado') || '').trim(),
+      cupos: inv ? inv.cupos : 1
+    };
+  })();
+
   (function () {
     var gate = document.getElementById('envelope-gate');
     var nameEl = document.getElementById('envelope-name');
@@ -1035,10 +1080,8 @@
     var burstLayer = document.getElementById('envelope-burst');
     if (!gate) return;
 
-    var params = new URLSearchParams(window.location.search);
-    var invitado = (params.get('invitado') || '').trim();
-    if (invitado) {
-      nameEl.textContent = invitado;
+    if (INVITACION.nombre) {
+      nameEl.textContent = INVITACION.nombre;
     }
 
     document.body.style.overflow = 'hidden';
@@ -1262,9 +1305,8 @@
     var guestsPlus = document.getElementById('guests-plus');
     var attendValue = '';
     var guestsCount = 1;
-    var cupos = parseInt(new URLSearchParams(window.location.search).get('cupos'), 10);
-    var maxGuests = cupos >= 1 && cupos <= 10 ? cupos : 10;
-    if (cupos >= 1 && cupos <= 10 && maxGuests > 1) {
+    var maxGuests = INVITACION.cupos;
+    if (maxGuests > 1) {
       document.getElementById('guests-label').textContent = 'Número de asistentes (hasta ' + maxGuests + ')';
     }
 
