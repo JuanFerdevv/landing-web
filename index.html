@@ -260,10 +260,10 @@
   .gallery-nav svg { width: 16px; height: 16px; }
   .gallery-nav-prev { left: 0; }
   .gallery-nav-next { right: 0; }
-  .gallery-dots { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+  .gallery-dots { display: flex; justify-content: center; align-items: center; gap: 4px; margin-top: 12px; flex-wrap: wrap; }
   .gallery-dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 999px;
     background: var(--button);
     opacity: 0.35;
@@ -272,7 +272,7 @@
     cursor: pointer;
     transition: all 300ms ease;
   }
-  .gallery-dot.is-active { width: 24px; opacity: 1; background: var(--button); }
+  .gallery-dot.is-active { width: 18px; opacity: 1; background: var(--button); }
   @media (min-width: 768px) {
     .gallery-coverflow { max-width: 600px; }
     .gallery-track { height: 520px; }
@@ -772,53 +772,71 @@
         <svg viewBox="0 0 24 24"><path d="M8.25 4.5l7.5 7.5-7.5 7.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <div class="gallery-stage">
-        <div class="gallery-card" data-index="0" style="aspect-ratio: 720 / 1280;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285449/primera_salida_de_novios.jpg">
+        <div class="gallery-card" data-index="0" style="aspect-ratio: 960 / 1280;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566042/1._1er_fin_de_an%CC%83o.jpg">
         </div>
         <div class="gallery-card" data-index="1" style="aspect-ratio: 1280 / 960;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285449/Primer_San_Valentin.jpg">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566041/2._Primer_San_Valentin.jpg">
         </div>
-        <div class="gallery-card" data-index="2" style="aspect-ratio: 960 / 1280;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285446/PHOTO-2019-05-10-10-03-23.jpg">
+        <div class="gallery-card" data-index="2" style="aspect-ratio: 720 / 1280;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566041/3._primera_salida_de_novios.jpg">
         </div>
         <div class="gallery-card" data-index="3" style="aspect-ratio: 720 / 1280;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285449/Primer_viaje_a_la_playa.jpg">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566041/4._primer_cumple_juntos.jpg">
         </div>
-        <div class="gallery-card" data-index="4" style="aspect-ratio: 1280 / 960;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285445/1er_viaje_de_tren.jpg">
+        <div class="gallery-card" data-index="4" style="aspect-ratio: 774 / 1032;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566043/4.41a3c4cc7-fc2d-4368-8cd1-c152b08c9771.jpg">
         </div>
-        <div class="gallery-card" data-index="5" style="aspect-ratio: 720 / 1280;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285448/primer_cumple_juntos.jpg">
+        <div class="gallery-card" data-index="5" style="aspect-ratio: 1242 / 2208;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566045/4AF43855-9FCC-4B7D-BCBF-A1516BC202F9.jpg">
         </div>
         <div class="gallery-card" data-index="6" style="aspect-ratio: 960 / 1280;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285445/1er_fin_de_an%CC%83o.jpg">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566043/5._5df62a64-91d5-406e-9e5a-7d4af5ab7ceb.jpg">
         </div>
-        <div class="gallery-card" data-index="7" style="aspect-ratio: 576 / 1024;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285447/PHOTO-2020-09-12-20-11-55.jpg">
+        <div class="gallery-card" data-index="7" style="aspect-ratio: 960 / 1280;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566044/6._Con_el_pupito.jpg">
         </div>
-        <div class="gallery-card" data-index="8" style="aspect-ratio: 1200 / 1600;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285447/PHOTO-2022-10-26-09-49-48.jpg">
+        <div class="gallery-card" data-index="8" style="aspect-ratio: 960 / 1280;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566041/7.PHOTO-2019-05-10-10-03-23.jpg">
         </div>
-        <div class="gallery-card" data-index="9" style="aspect-ratio: 768 / 1024;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285447/PHOTO-2023-08-10-19-16-18.jpg">
+        <div class="gallery-card" data-index="9" style="aspect-ratio: 576 / 1024;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566042/8.PHOTO-2020-09-12-20-11-55.jpg">
         </div>
-        <div class="gallery-card" data-index="10" style="aspect-ratio: 1734 / 3084;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285446/llegada_a_Madrid.jpg">
+        <div class="gallery-card" data-index="10" style="aspect-ratio: 3024 / 4032;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566046/9.IMG_7869.jpg">
         </div>
-        <div class="gallery-card" data-index="11" style="aspect-ratio: 1440 / 1920;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285446/Madrid.jpg">
+        <div class="gallery-card" data-index="11" style="aspect-ratio: 759 / 1188;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566046/10.7418f484-cb78-47e3-80a3-c3d4abb48216.jpg">
         </div>
-        <div class="gallery-card" data-index="12" style="aspect-ratio: 960 / 1280;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285448/PHOTO-2024-03-31-20-52-11.jpg">
+        <div class="gallery-card" data-index="12" style="aspect-ratio: 3024 / 4032;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566055/11.IMG_1405.jpg">
         </div>
-        <div class="gallery-card" data-index="13" style="aspect-ratio: 3247 / 5184;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285450/En_espera_de_Josema.jpg">
+        <div class="gallery-card" data-index="13" style="aspect-ratio: 1242 / 2208;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566047/12.61C2EF7C-0E11-4F6C-8277-834B7823DD2C.jpg">
         </div>
-        <div class="gallery-card" data-index="14" style="aspect-ratio: 960 / 1280;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285445/Con_el_pupito.jpg">
+        <div class="gallery-card" data-index="14" style="aspect-ratio: 1242 / 2208;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566047/13._917D3202-27DB-4633-8ECD-B276A2456C6F.jpg">
         </div>
-        <div class="gallery-card" data-index="15" style="aspect-ratio: 3024 / 4032;">
-          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1790285450/IMG_6885.jpg">
+        <div class="gallery-card" data-index="15" style="aspect-ratio: 1242 / 2208;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566048/14.EE500481-F567-4BA9-8E19-7D06F59B8433.jpg">
+        </div>
+        <div class="gallery-card" data-index="16" style="aspect-ratio: 1242 / 2208;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566049/15..jpg">
+        </div>
+        <div class="gallery-card" data-index="17" style="aspect-ratio: 3024 / 4032;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566054/16.IMG_7506.jpg">
+        </div>
+        <div class="gallery-card" data-index="18" style="aspect-ratio: 3247 / 5184;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566050/17._En_espera_de_Josema.jpg">
+        </div>
+        <div class="gallery-card" data-index="19" style="aspect-ratio: 1440 / 1920;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566050/18._Madrid.jpg">
+        </div>
+        <div class="gallery-card" data-index="20" style="aspect-ratio: 1200 / 1600;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566052/19.PHOTO-2022-10-26-09-49-48.jpg">
+        </div>
+        <div class="gallery-card" data-index="21" style="aspect-ratio: 1200 / 1600;">
+          <img class="photo-img" loading="lazy" src="https://res.cloudinary.com/tcdnm8vm/image/upload/f_auto,q_auto,w_900,c_limit/v1791566052/20.22518229-a8ed-4601-907c-14890daa6156.jpg">
         </div>
       </div>
     </div>
@@ -839,6 +857,12 @@
       <button type="button" class="gallery-dot" data-index="13" aria-label="Ir a foto 14"></button>
       <button type="button" class="gallery-dot" data-index="14" aria-label="Ir a foto 15"></button>
       <button type="button" class="gallery-dot" data-index="15" aria-label="Ir a foto 16"></button>
+      <button type="button" class="gallery-dot" data-index="16" aria-label="Ir a foto 17"></button>
+      <button type="button" class="gallery-dot" data-index="17" aria-label="Ir a foto 18"></button>
+      <button type="button" class="gallery-dot" data-index="18" aria-label="Ir a foto 19"></button>
+      <button type="button" class="gallery-dot" data-index="19" aria-label="Ir a foto 20"></button>
+      <button type="button" class="gallery-dot" data-index="20" aria-label="Ir a foto 21"></button>
+      <button type="button" class="gallery-dot" data-index="21" aria-label="Ir a foto 22"></button>
     </div>
   </div>
 </section>
@@ -878,6 +902,11 @@
       <span class="itin-time">20:00</span>
       <span class="itin-marker"><span class="dot"></span></span>
       <span class="itin-content"><h3>Comida reanimadora</h3><p>Un bocado para recargar energía</p></span>
+    </div>
+    <div class="itin-item">
+      <span class="itin-time">22:00</span>
+      <span class="itin-marker"><span class="dot"></span></span>
+      <span class="itin-content"><h3>Fin de la fiesta</h3></span>
     </div>
   </div>
 </section>
