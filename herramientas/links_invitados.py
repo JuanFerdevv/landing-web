@@ -84,7 +84,8 @@ def whatsapp(nombre, celular, link):
     telefono = re.sub(r"\D", "", celular)
     if telefono.startswith("0"):
         telefono = "593" + telefono[1:]
-    return f"https://wa.me/{telefono}?text={quote(texto, safe='')}"
+    # wa.me reescribe el texto al redirigir (espacios -> "+", y rompe emojis como 🤍)
+    return f"https://api.whatsapp.com/send?phone={telefono}&text={quote(texto, safe='')}"
 
 
 def main():
