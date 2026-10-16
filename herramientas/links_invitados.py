@@ -62,17 +62,29 @@ def links(nombre, celular, cupos, key):
     if not 1 <= cupos <= 10:
         raise ValueError(f"cupos de {nombre} debe estar entre 1 y 10")
     link = f"{SITIO}?c={codigo(nombre, cupos, key)}"
-    if cupos == 1:
-        texto = (f"¡Hola {nombre}! Con mucha alegría queremos compartir contigo nuestra "
-                 f"invitación de boda. Ábrela aquí: {link}")
-    else:
-        texto = (f"¡Hola {nombre}! Con mucha alegría queremos compartir con ustedes nuestra "
-                 f"invitación de boda. Ábranla aquí: {link}")
-    texto += "\n\nCon cariño, Ale & JuanSe"
+    return link, whatsapp(nombre, celular, link)
+
+
+def mensaje(nombre, link):
+    return (
+        f"Queridos {nombre} 🤍\n\n"
+        "Queremos invitarles a celebrar con nosotros uno de los días más importantes "
+        "de nuestras vidas.\n\n"
+        f"{link}\n\n"
+        "En la invitación encontrarán el enlace para acceder al formulario donde podrán "
+        "confirmar su asistencia hasta el 5 de noviembre.\n\n"
+        "¡Esperamos poder compartir este día tan especial con ustedes!\n\n"
+        "Con cariño,\n\n"
+        "Ale y JuanSe"
+    )
+
+
+def whatsapp(nombre, celular, link):
+    texto = mensaje(nombre, link)
     telefono = re.sub(r"\D", "", celular)
     if telefono.startswith("0"):
         telefono = "593" + telefono[1:]
-    return link, f"https://wa.me/{telefono}?text={quote(texto, safe='')}"
+    return f"https://wa.me/{telefono}?text={quote(texto, safe='')}"
 
 
 def main():
