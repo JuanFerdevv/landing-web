@@ -62,25 +62,39 @@ def links(nombre, celular, cupos, key):
     if not 1 <= cupos <= 10:
         raise ValueError(f"cupos de {nombre} debe estar entre 1 y 10")
     link = f"{SITIO}?c={codigo(nombre, cupos, key)}"
-    return link, whatsapp(nombre, celular, link)
+    return link, whatsapp(nombre, celular, link, cupos)
 
 
-def mensaje(nombre, link):
+def mensaje(nombre, link, cupos):
+    if int(cupos) == 1:
+        return (
+            f"{nombre} 🤍\n\n"
+            "Con mucha alegría queremos invitarte a celebrar con nosotros uno de los días "
+            "más importantes de nuestras vidas: ¡nuestra boda!\n\n"
+            "Aquí encontrarás tu invitación:\n"
+            f"{link}\n\n"
+            "Dentro de ella podrás confirmar tu asistencia. Te pedimos hacerlo hasta el "
+            "5 de noviembre.\n\n"
+            "¡Nos encantaría compartir contigo este día tan especial!\n\n"
+            "Con cariño,\n"
+            "Ale y JuanSe"
+        )
     return (
         f"Queridos {nombre} 🤍\n\n"
-        "Queremos invitarles a celebrar con nosotros uno de los días más importantes "
-        "de nuestras vidas.\n\n"
+        "Con mucha alegría queremos invitarles a celebrar con nosotros uno de los días "
+        "más importantes de nuestras vidas: ¡nuestra boda!\n\n"
+        "Aquí encontrarán su invitación:\n"
         f"{link}\n\n"
-        "En la invitación encontrarán el enlace para acceder al formulario donde podrán "
-        "confirmar su asistencia hasta el 5 de noviembre.\n\n"
-        "¡Esperamos poder compartir este día tan especial con ustedes!\n\n"
-        "Con cariño,\n\n"
+        "Dentro de ella está el enlace al formulario para confirmar su asistencia. "
+        "Les pedimos hacerlo hasta el 5 de noviembre.\n\n"
+        "¡Nos encantaría compartir este día tan especial con ustedes!\n\n"
+        "Con cariño,\n"
         "Ale y JuanSe"
     )
 
 
-def whatsapp(nombre, celular, link):
-    texto = mensaje(nombre, link)
+def whatsapp(nombre, celular, link, cupos):
+    texto = mensaje(nombre, link, cupos)
     telefono = re.sub(r"\D", "", celular)
     if telefono.startswith("0"):
         telefono = "593" + telefono[1:]
