@@ -80,7 +80,7 @@ def mensaje(nombre, link, cupos):
             "Ale y JuanSe"
         )
     return (
-        f"Queridos {nombre} 🤍\n\n"
+        f"{nombre} 🤍\n\n"
         "Con mucha alegría queremos invitarles a celebrar con nosotros uno de los días "
         "más importantes de nuestras vidas: ¡nuestra boda!\n\n"
         "Aquí encontrarán su invitación:\n"
