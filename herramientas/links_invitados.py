@@ -5,6 +5,9 @@ Uso:
   python3 herramientas/links_invitados.py "Nombre" "+593 99 123 4567" 2
   python3 herramientas/links_invitados.py --csv invitados.csv > links.csv
 
+Con --participar el mensaje es para quienes sabemos que no podrán venir:
+les cuenta la noticia y les comparte la invitación, sin pedir confirmación.
+
 El CSV lleva tres columnas: nombre, celular, cupos (separadas por coma,
 punto y coma o tabulación; la primera fila puede ser de encabezados).
 
@@ -56,13 +59,41 @@ def codigo(nombre, cupos, key):
     return base64.urlsafe_b64encode(bytes([nonce]) + cuerpo + firma).decode().rstrip("=")
 
 
-def links(nombre, celular, cupos, key):
+def links(nombre, celular, cupos, key, participar=False):
     nombre = nombre.strip()
     cupos = int(cupos)
     if not 1 <= cupos <= 10:
         raise ValueError(f"cupos de {nombre} debe estar entre 1 y 10")
     link = f"{SITIO}?c={codigo(nombre, cupos, key)}"
-    return link, whatsapp(nombre, celular, link, cupos)
+    return link, whatsapp(nombre, celular, link, cupos, participar)
+
+
+def participacion(nombre, link, cupos):
+    if int(cupos) == 1:
+        return (
+            f"{nombre} 🤍\n\n"
+            "Queremos compartir contigo una noticia muy especial: ¡nos casamos! "
+            "Será el 19 de diciembre de 2026.\n\n"
+            "Sabemos que quizás no te sea posible acompañarnos, pero no queríamos dejar "
+            "de contártelo y hacerte parte de esta alegría.\n\n"
+            "Aquí puedes ver nuestra invitación:\n"
+            f"{link}\n\n"
+            "Te llevaremos en el corazón ese día.\n\n"
+            "Con cariño,\n"
+            "Ale y JuanSe"
+        )
+    return (
+        f"{nombre} 🤍\n\n"
+        "Queremos compartir con ustedes una noticia muy especial: ¡nos casamos! "
+        "Será el 19 de diciembre de 2026.\n\n"
+        "Sabemos que quizás no les sea posible acompañarnos, pero no queríamos dejar "
+        "de contárselo y hacerles parte de esta alegría.\n\n"
+        "Aquí pueden ver nuestra invitación:\n"
+        f"{link}\n\n"
+        "Los llevaremos en el corazón ese día.\n\n"
+        "Con cariño,\n"
+        "Ale y JuanSe"
+    )
 
 
 def mensaje(nombre, link, cupos):
@@ -93,8 +124,8 @@ def mensaje(nombre, link, cupos):
     )
 
 
-def whatsapp(nombre, celular, link, cupos):
-    texto = mensaje(nombre, link, cupos)
+def whatsapp(nombre, celular, link, cupos, participar=False):
+    texto = (participacion if participar else mensaje)(nombre, link, cupos)
     telefono = re.sub(r"\D", "", celular)
     if telefono.startswith("0"):
         telefono = "593" + telefono[1:]
@@ -104,8 +135,10 @@ def whatsapp(nombre, celular, link, cupos):
 
 def main():
     key = clave()
-    if len(sys.argv) == 3 and sys.argv[1] == "--csv":
-        with open(sys.argv[2], newline="", encoding="utf-8-sig") as f:
+    args = [a for a in sys.argv[1:] if a != "--participar"]
+    participar = len(args) < len(sys.argv) - 1
+    if len(args) == 2 and args[0] == "--csv":
+        with open(args[1], newline="", encoding="utf-8-sig") as f:
             muestra = f.read(2048)
             f.seek(0)
             filas = list(csv.reader(f, csv.Sniffer().sniff(muestra, ",;\t")))
@@ -114,9 +147,9 @@ def main():
         out = csv.writer(sys.stdout)
         out.writerow(["nombre", "celular", "cupos", "link", "whatsapp"])
         for nombre, celular, cupos, *_ in filas:
-            out.writerow([nombre, celular, cupos, *links(nombre, celular, cupos, key)])
-    elif len(sys.argv) == 4:
-        link, wa = links(*sys.argv[1:], key)
+            out.writerow([nombre, celular, cupos, *links(nombre, celular, cupos, key, participar)])
+    elif len(args) == 3:
+        link, wa = links(*args, key, participar)
         print(f"Link:     {link}\nWhatsApp: {wa}")
     else:
         sys.exit(__doc__)
