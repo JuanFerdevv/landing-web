@@ -140,6 +140,8 @@
     margin-top: 20px;
   }
   .envelope-card .btn { margin-top: 22px; }
+  .envelope-mensaje p { font-size: 15px; line-height: 1.6; color: var(--ink); margin: 14px auto 0; max-width: 32ch; }
+  .envelope-mensaje .envelope-firma { font-style: italic; color: var(--title); margin-top: 20px; }
 
   body {
     background: var(--bg);
@@ -689,12 +691,17 @@
       <span class="envelope-icon"><svg><use href="#heart"></use></svg></span>
       <span class="seal-ring" aria-hidden="true"></span>
     </span>
-    <p class="eyebrow" style="text-align:center">Para</p>
+    <p class="eyebrow envelope-valido" style="text-align:center">Para</p>
     <h2 class="envelope-name" id="envelope-name">Nuestros invitados</h2>
     <svg class="divider small"><use href="#branch"></use></svg>
-    <p class="envelope-date">19 de diciembre de 2026</p>
-    <p class="envelope-sub">Los invitamos cordialmente</p>
-    <button type="button" class="btn solid" id="envelope-open">Abrir</button>
+    <p class="envelope-date envelope-valido">19 de diciembre de 2026</p>
+    <p class="envelope-sub envelope-valido">Los invitamos cordialmente</p>
+    <button type="button" class="btn solid envelope-valido" id="envelope-open">Abrir</button>
+    <div class="envelope-mensaje" id="envelope-mensaje" hidden>
+      <p>Sabemos que a veces los compromisos y los tiempos no coinciden. Como ya pasó la fecha límite de confirmación, entenderemos que no podrás acompañarnos en nuestra boda.</p>
+      <p>No te preocupes, agradecemos mucho que hayas sido parte de este momento y esperamos vernos pronto.</p>
+      <p class="envelope-firma">Con cariño, Ale y JuanSe</p>
+    </div>
   </div>
   <div class="envelope-burst" id="envelope-burst" aria-hidden="true"></div>
 </div>
@@ -1061,6 +1068,7 @@
     var params = new URLSearchParams(window.location.search);
     var inv = params.get('c') ? descifrar(params.get('c')) : null;
     return {
+      invalido: params.has('c') && !inv,
       nombre: inv ? inv.nombre : (params.get('invitado') || '').trim(),
       cupos: inv ? inv.cupos : 1
     };
@@ -1074,7 +1082,11 @@
     var burstLayer = document.getElementById('envelope-burst');
     if (!gate) return;
 
-    if (INVITACION.nombre) {
+    if (INVITACION.invalido) {
+      nameEl.textContent = '¡Hola!';
+      gate.querySelectorAll('.envelope-valido').forEach(function (el) { el.hidden = true; });
+      document.getElementById('envelope-mensaje').hidden = false;
+    } else if (INVITACION.nombre) {
       nameEl.textContent = INVITACION.nombre;
     }
 
