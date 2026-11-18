@@ -1022,6 +1022,8 @@
   // firma, para que no se lean ni se puedan editar. Sin código válido: 1 cupo.
   var INVITACION = (function () {
     var CLAVE = 'f1p0310s5p1YJCzav8Nq6A8I';
+    // Links anulados: hash fnv del nombre, para no dejar el nombre a la vista.
+    var ANULADOS = [2719500008];
     function utf8(str) { return Array.prototype.slice.call(new TextEncoder().encode(str)); }
     function fnv(arr) {
       var h = 2166136261;
@@ -1050,6 +1052,7 @@
         var cupos = parseInt(texto.slice(0, sep), 10);
         var nombre = texto.slice(sep + 1).trim();
         if (sep < 1 || !(cupos >= 1 && cupos <= 10) || !nombre) return null;
+        if (ANULADOS.indexOf(fnv(utf8(nombre))) !== -1) return null;
         return { nombre: nombre, cupos: cupos };
       } catch (e) {
         return null;
